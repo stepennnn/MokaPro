@@ -1,0 +1,199 @@
+/* ============================================================
+   TableSelectionModal Component Styling
+   Source of Truth: pilih meja.png
+   ============================================================ */
+
+.table-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(30, 20, 15, 0.48);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.table-modal-container {
+  background-color: #ffffff;
+  border: 1px solid #ede5dc;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 440px;
+  padding: 22px 24px 20px 24px;
+  box-shadow: 0 16px 40px rgba(40, 24, 16, 0.22);
+  box-sizing: border-box;
+  animation: tableModalIn 0.18s ease-out;
+}
+
+@keyframes tableModalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Header */
+.table-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.table-modal-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #261a15;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.table-modal-close-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #7a6d64;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.table-modal-close-btn:hover {
+  color: #261a15;
+}
+
+/* Subtitle */
+.table-modal-subtitle {
+  font-size: 11.5px;
+  color: #7a6d64;
+  margin: 0 0 16px 0;
+}
+
+/* 4-column Grid */
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+/* Table Card */
+.table-card {
+  border-radius: 10px;
+  padding: 10px 4px 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  box-sizing: border-box;
+  outline: none;
+  user-select: none;
+}
+
+.table-card-icon {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-card-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+.table-card-status {
+  font-size: 9.5px;
+  white-space: nowrap;
+}
+
+/* Available (Green) */
+.table-card.available {
+  background-color: #eaf6f0;
+  border-color: #a8dfc5;
+  color: #1a7b54;
+}
+
+.table-card.available .table-card-icon {
+  color: #1a7b54;
+}
+
+.table-card.available .table-card-status {
+  color: #2e8b62;
+}
+
+.table-card.available:hover {
+  background-color: #dcf2e6;
+  border-color: #1a7b54;
+  transform: translateY(-1px);
+}
+
+.table-card.available.selected {
+  box-shadow: 0 0 0 2px #1a7b54;
+  border-color: #1a7b54;
+}
+
+/* Occupied (Red / Pink) */
+.table-card.occupied {
+  background-color: #fdf0f2;
+  border-color: #f7bec9;
+  color: #be394e;
+  cursor: not-allowed;
+  opacity: 0.92;
+}
+
+.table-card.occupied .table-card-icon {
+  color: #be394e;
+}
+
+.table-card.occupied .table-card-status {
+  color: #c7485c;
+}
+
+/* Bottom Action */
+.table-modal-bottom {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.table-takeaway-btn {
+  background-color: #ffffff;
+  border: 1px solid #dcd4cb;
+  border-radius: 9999px;
+  padding: 7px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #261a15;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.table-takeaway-btn:hover {
+  background-color: #faf7f2;
+  border-color: #bd733d;
+  color: #bd733d;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .table-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

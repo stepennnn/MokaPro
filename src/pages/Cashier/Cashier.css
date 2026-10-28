@@ -1,0 +1,253 @@
+/* ============================================================
+   Cashier Page Styling
+   Source of Truth: kasir.png, kasir keranjang.png
+   ============================================================ */
+
+.cashier-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #faf7f2;
+  color: #1f1a17;
+  box-sizing: border-box;
+}
+
+/* Main Area */
+.cashier-main {
+  flex: 1;
+  padding: 16px 24px 24px 24px;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.cashier-container {
+  display: grid;
+  grid-template-columns: 1fr 310px;
+  gap: 20px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* Products Section (Left) */
+.cashier-products-section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Toolbar: Search & Order Options */
+.cashier-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cashier-search-wrap {
+  flex: 1;
+}
+
+.cashier-search-input {
+  width: 100%;
+  height: 38px;
+  background-color: #f6efe8;
+  border: 1px solid #ede5dc;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 13px;
+  color: #261a15;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.cashier-search-input:focus {
+  background-color: #ffffff;
+  border-color: #bd733d;
+  box-shadow: 0 0 0 2px rgba(189, 115, 61, 0.1);
+}
+
+.cashier-order-options {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cashier-option-btn {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  border: 1px solid #ede5dc;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.table-select-btn {
+  background-color: #f6efe8;
+  color: #3b2519;
+}
+
+.table-select-btn:hover {
+  background-color: #eee4da;
+}
+
+.option-icon {
+  flex-shrink: 0;
+}
+
+.mode-btn {
+  background-color: #f6efe8;
+  color: #7a6d64;
+}
+
+.mode-btn:hover {
+  background-color: #eee4da;
+  color: #261a15;
+}
+
+.mode-btn.active {
+  background-color: #3b2519;
+  color: #ffffff;
+  border-color: #3b2519;
+}
+
+/* Category Filter Bar */
+.cashier-categories-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.cashier-category-pill {
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+  background-color: #ffffff;
+  border: 1px solid #ede5dc;
+  color: #6e625a;
+}
+
+.cashier-category-pill:hover {
+  border-color: #d8c8b8;
+  color: #261a15;
+}
+
+.cashier-category-pill.active {
+  background-color: #3b2519;
+  color: #ffffff;
+  border-color: #3b2519;
+  font-weight: 600;
+}
+
+/* Grid Wrap */
+.cashier-grid-wrap {
+  width: 100%;
+}
+
+/* Cart Section (Right) */
+.cashier-cart-section {
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 146px);
+  max-height: 520px;
+}
+
+/* Footer Bar */
+.cashier-footer {
+  background-color: #fffdf9;
+  border-top: 1px solid #ece4d9;
+  padding: 12px 0;
+  box-sizing: border-box;
+}
+
+.cashier-footer-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.cashier-footer-copy {
+  color: #8a7c73;
+  margin: 0;
+}
+
+.cashier-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #2e7d5e;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  background-color: #27a876;
+  display: inline-block;
+}
+
+.status-separator {
+  color: #c4b9ae;
+  user-select: none;
+}
+
+.terminal-id {
+  color: #8a7c73;
+}
+
+/* Responsive Adaptations */
+@media (max-width: 1024px) {
+  .cashier-container {
+    grid-template-columns: 1fr;
+  }
+
+  .cashier-cart-section {
+    position: static;
+    height: auto;
+    max-height: none;
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cashier-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cashier-footer-container {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

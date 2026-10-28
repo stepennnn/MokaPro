@@ -1,0 +1,285 @@
+/* ============================================================
+   Reusable PinLogin Component Styling
+   Source of Truth: pin kasir.png, pin barista.png, pin admin.png
+   ============================================================ */
+
+.pin-login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #faf7f2;
+  color: #1f1a17;
+  box-sizing: border-box;
+}
+
+/* Main Area */
+.pin-login-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+/* PIN Card Container */
+.pin-card {
+  width: 100%;
+  max-width: 340px;
+  background-color: #ffffff;
+  border: 1px solid #ede5dc;
+  border-radius: 20px;
+  padding: 22px 24px 24px 24px;
+  box-shadow: 0 4px 20px rgba(59, 37, 25, 0.04);
+  box-sizing: border-box;
+}
+
+/* Top: Ganti Pengguna Action */
+.pin-card-top {
+  margin-bottom: 10px;
+}
+
+.pin-back-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #a06030;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: color 0.15s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+.pin-back-btn:hover {
+  color: #3b2519;
+  transform: translateX(-2px);
+}
+
+.pin-back-arrow {
+  flex-shrink: 0;
+}
+
+/* Center: Role Icon & Title */
+.pin-card-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.pin-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f5e7d7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  line-height: 0;
+}
+
+.pin-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pin-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #261a15;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.pin-role-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #261a15;
+  margin: 0 0 4px 0;
+}
+
+.pin-role-sub {
+  font-size: 12px;
+  color: #7a6d64;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Form */
+.pin-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.pin-input-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #261a15;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.pin-input {
+  width: 100%;
+  height: 44px;
+  background-color: #fdfbf7;
+  border: 1px solid #e5ded6;
+  border-radius: 10px;
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 6px;
+  color: #261a15;
+  padding: 0 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.pin-input:focus {
+  border-color: #bd733d;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(189, 115, 61, 0.12);
+}
+
+.pin-input-error {
+  border-color: #d32f2f;
+  background-color: #fff9f9;
+}
+
+.pin-error-text {
+  font-size: 11.5px;
+  color: #d32f2f;
+  margin-top: 6px;
+  text-align: left;
+}
+
+.pin-submit-btn {
+  width: 100%;
+  height: 42px;
+  background-color: #3b2519;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-top: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(59, 37, 25, 0.16);
+  transition: background-color 0.16s ease, transform 0.12s ease;
+  user-select: none;
+}
+
+.pin-submit-btn:hover {
+  background-color: #4f3323;
+  transform: translateY(-1px);
+}
+
+.pin-submit-btn:active {
+  transform: translateY(0);
+}
+
+.pin-submit-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.16s ease;
+}
+
+.pin-submit-btn:hover .pin-submit-arrow {
+  transform: translateX(2px);
+}
+
+/* Helper Note */
+.pin-helper-note {
+  font-size: 11.5px;
+  color: #7a6d64;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.pin-helper-note strong {
+  color: #261a15;
+  font-weight: 700;
+}
+
+/* Footer Bar */
+.pin-login-footer {
+  background-color: #fffdf9;
+  border-top: 1px solid #ece4d9;
+  padding: 12px 0;
+  box-sizing: border-box;
+}
+
+.pin-login-footer-container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.pin-login-footer-copy {
+  color: #8a7c73;
+  margin: 0;
+}
+
+.pin-login-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #2e7d5e;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  background-color: #27a876;
+  display: inline-block;
+}
+
+.status-separator {
+  color: #c4b9ae;
+  user-select: none;
+}
+
+.terminal-id {
+  color: #8a7c73;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pin-login-footer-container {
+    padding: 0 24px;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

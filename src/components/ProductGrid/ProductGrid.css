@@ -1,0 +1,35 @@
+/* ============================================================
+   ProductGrid Component Styling
+   Source of Truth: kasir.png, kasir keranjang.png
+   ============================================================ */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.product-grid-empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: #8a7c73;
+  font-size: 14px;
+  grid-column: 1 / -1;
+  background-color: #ffffff;
+  border: 1px dashed #ede5dc;
+  border-radius: 14px;
+}
+
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}

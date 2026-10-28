@@ -1,0 +1,192 @@
+/* ============================================================
+   DashboardNavbar Styling
+   Source of Truth: kasir.png, kasir keranjang.png
+   ============================================================ */
+
+.dashboard-navbar {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ece7e1;
+  box-sizing: border-box;
+}
+
+.dashboard-navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 58px;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* Left Section */
+.dashboard-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dashboard-navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  user-select: none;
+}
+
+.dashboard-logo-icon {
+  width: 30px;
+  height: 30px;
+  background-color: #3b2519;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(59, 37, 25, 0.12);
+}
+
+.dashboard-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+}
+
+.brand-moka {
+  color: #382419;
+  font-weight: 700;
+}
+
+.brand-pro {
+  color: #bd733d;
+  font-weight: 700;
+}
+
+.dashboard-branch-pill {
+  background-color: #f6efe8;
+  color: #8f7f74;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  line-height: 1;
+  border-radius: 9999px;
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.dashboard-branch-pill .pill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #8f7f74;
+  flex-shrink: 0;
+}
+
+/* Center Section: Navigation Tabs */
+.dashboard-navbar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-nav-pill-group {
+  background-color: #f6efe8;
+  border-radius: 9999px;
+  padding: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dashboard-nav-tab {
+  padding: 6px 16px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6e625a;
+  text-decoration: none;
+  border-radius: 9999px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.dashboard-nav-tab:hover {
+  color: #261a15;
+}
+
+.dashboard-nav-tab.active {
+  background-color: #c07a46;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(192, 122, 70, 0.25);
+}
+
+/* Right Section: User Info Card & Ganti Pengguna */
+.dashboard-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-user-badge {
+  background-color: #f6efe8;
+  border-radius: 8px;
+  padding: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  line-height: 1.25;
+}
+
+.dashboard-user-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #261a15;
+}
+
+.dashboard-user-role {
+  font-size: 10px;
+  color: #8a7c73;
+}
+
+.dashboard-switch-user-btn {
+  background-color: #ffffff;
+  border: 1px solid #e2d7cc;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #261a15;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.dashboard-switch-user-btn:hover {
+  background-color: #faf7f2;
+  border-color: #bd733d;
+  color: #bd733d;
+}
+
+.switch-user-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dashboard-navbar-center {
+    display: none;
+  }
+}
