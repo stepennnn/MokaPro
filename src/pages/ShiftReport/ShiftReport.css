@@ -1,0 +1,241 @@
+/* ============================================================
+   ShiftReport.css
+   Halaman Rekap Shift Kasir — route /cashier/shift
+   Role: Kasir
+   ============================================================ */
+
+/* Page wrapper */
+.shiftreport-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #faf7f2;
+}
+
+/* Main area grows between navbar and footer */
+.shiftreport-main {
+  flex: 1;
+  padding: 32px 24px 40px;
+}
+
+.shiftreport-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ---- 4 Stat Cards Row ---- */
+.shiftreport-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.shiftreport-stat-card {
+  background: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shiftreport-stat-label {
+  font-size: 12px;
+  color: #8c7768;
+  font-weight: 400;
+}
+
+.shiftreport-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c1a0e;
+  line-height: 1.2;
+}
+
+.shiftreport-stat-trend {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.shiftreport-stat-trend--up {
+  color: #2d7a40;
+}
+
+.shiftreport-stat-subtitle {
+  font-size: 12px;
+  color: #8c7768;
+}
+
+/* ---- Two-Column Grid ---- */
+.shiftreport-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ---- Shared Card Base ---- */
+.shiftreport-card {
+  background: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 14px;
+  padding: 22px 24px 24px;
+}
+
+.shiftreport-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c1a0e;
+  margin: 0 0 20px;
+}
+
+/* ---- Left: Chart Placeholder Card ---- */
+.shiftreport-card--chart {
+  /* takes full available height of grid row */
+}
+
+.shiftreport-chart-wrap {
+  width: 100%;
+  height: 200px;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+/* ---- Right: Recap Card ---- */
+.shiftreport-card--recap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.shiftreport-recap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 24px;
+}
+
+.shiftreport-recap-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid #f3ede6;
+}
+
+.shiftreport-recap-row:last-child {
+  border-bottom: none;
+}
+
+.shiftreport-recap-label {
+  font-size: 13px;
+  color: #6b5c50;
+  font-weight: 400;
+}
+
+.shiftreport-recap-val {
+  font-size: 13px;
+  color: #2c1a0e;
+  font-weight: 600;
+}
+
+/* ---- Close Shift Button ---- */
+.shiftreport-close-btn {
+  width: 100%;
+  background-color: #2c1a0e;
+  color: #deba8f;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.shiftreport-close-btn:hover:not(:disabled) {
+  background-color: #3d2510;
+}
+
+.shiftreport-close-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---- Footer ---- */
+.shiftreport-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #ede7df;
+  padding: 14px 24px;
+}
+
+.shiftreport-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shiftreport-footer-copy {
+  font-size: 11px;
+  color: #8c7768;
+  margin: 0;
+}
+
+.shiftreport-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.sr-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sr-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #4caf50;
+  display: inline-block;
+}
+
+.sr-status-text {
+  font-size: 11px;
+  color: #6b5c50;
+}
+
+.sr-status-sep {
+  color: #c5b9b0;
+}
+
+.sr-terminal-id {
+  font-size: 11px;
+  color: #6b5c50;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 800px) {
+  .shiftreport-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shiftreport-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .shiftreport-close-btn {
+    display: none;
+  }
+}

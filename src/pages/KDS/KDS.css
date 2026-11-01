@@ -1,0 +1,169 @@
+/* ============================================================
+   KDS.css
+   Halaman Kitchen Display System (Barista & Dapur)
+   Source of truth: kds.png
+   ============================================================ */
+
+.kds-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #faf7f2;
+}
+
+.kds-main {
+  flex: 1;
+  padding: 24px 0 36px;
+}
+
+.kds-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* ── Header Banner ───────────────────────────────────────── */
+.kds-header-banner {
+  background-color: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 14px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(30, 18, 10, 0.04);
+  box-sizing: border-box;
+}
+
+.kds-header-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e120a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.kds-header-subtitle {
+  font-size: 12.5px;
+  color: #7a6355;
+  margin: 5px 0 0;
+  line-height: 1.4;
+}
+
+/* ── Counter Badges ──────────────────────────────────────── */
+.kds-badges-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.kds-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.kds-badge--waiting {
+  background-color: #fff4d6;
+  color: #7c5e10;
+}
+
+.kds-badge--processing {
+  background-color: #ebf3fe;
+  color: #1d4ed8;
+}
+
+.kds-badge--completed {
+  background-color: #ccebdc;
+  color: #0e754a;
+}
+
+/* ── Orders Grid Section ─────────────────────────────────── */
+.kds-grid-section {
+  margin-top: 18px;
+}
+
+.kds-orders-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+/* Responsive grid for smaller screens */
+@media (max-width: 900px) {
+  .kds-orders-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .kds-orders-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.kds-footer {
+  border-top: 1px solid #ede7df;
+  background-color: #ffffff;
+  padding: 12px 24px;
+  box-sizing: border-box;
+}
+
+.kds-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #8c7768;
+}
+
+.kds-footer-copy {
+  margin: 0;
+}
+
+.kds-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kds-footer-status .status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #00875a;
+  font-weight: 600;
+}
+
+.kds-footer-status .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #00875a;
+  display: inline-block;
+}
+
+.kds-footer-status .status-separator {
+  color: #c5b8ae;
+}
+
+.kds-footer-status .terminal-id {
+  color: #7a6355;
+}
+
+@media (max-width: 768px) {
+  .kds-footer-container {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

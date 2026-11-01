@@ -207,7 +207,6 @@ export default function PaymentModal({ isOpen, total = 0, onClose, onPaymentConf
                   <rect x="88" y="82" width="4" height="6" fill="#3b2519" />
                 </svg>
               </div>
-              <p className="qris-hint">Scan QR Code menggunakan aplikasi e-wallet atau mobile banking</p>
             </div>
           )}
 

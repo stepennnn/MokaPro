@@ -5,6 +5,8 @@ import Cart from '../../components/Cart/Cart';
 import CustomizeProductModal from '../../components/CustomizeProductModal/CustomizeProductModal';
 import TableSelectionModal from '../../components/TableSelectionModal/TableSelectionModal';
 import PaymentModal from '../../components/PaymentModal/PaymentModal';
+import PaymentSuccessModal from '../../components/PaymentSuccessModal/PaymentSuccessModal';
+import ReceiptModal from '../../components/ReceiptModal/ReceiptModal';
 import espressoImg from '../../assets/product-espresso.png';
 import latteImg from '../../assets/product-latte.png';
 import kopiSusuImg from '../../assets/product-kopisusu.png';
@@ -91,6 +93,10 @@ export default function Cashier() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isTableModalOpen, setIsTableModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isPaymentSuccessOpen, setIsPaymentSuccessOpen] = useState(false);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
+  const [completedTransaction, setCompletedTransaction] = useState(null);
+  const [transactionCount, setTransactionCount] = useState(1);
 
   // Filter produk berdasarkan kategori dan pencarian
   const filteredProducts = useMemo(() => {
@@ -124,11 +130,14 @@ export default function Cashier() {
 
   // Tambah produk dari modal kustomisasi ke keranjang
   const handleAddToCartFromModal = (customizedProduct) => {
+    const itemNotes = customizedProduct.notes || '';
+    const cartItemId = `${customizedProduct.id}__${itemNotes}`;
+
     setCartItems((prevItems) => {
       const existingIndex = prevItems.findIndex(
         (item) =>
           item.id === customizedProduct.id &&
-          item.notes === customizedProduct.notes
+          (item.notes || '') === itemNotes
       );
 
       if (existingIndex > -1) {
@@ -144,23 +153,41 @@ export default function Cashier() {
         ...prevItems,
         {
           ...customizedProduct,
+          cartItemId,
           quantity: 1
         }
       ];
     });
   };
 
-  // Update kuantitas item di keranjang
-  const handleUpdateQuantity = (productId, newQuantity) => {
-    if (newQuantity <= 0) {
-      setCartItems((prev) => prev.filter((item) => item.id !== productId));
-    } else {
-      setCartItems((prev) =>
-        prev.map((item) =>
-          item.id === productId ? { ...item, quantity: newQuantity } : item
-        )
-      );
-    }
+  // Update kuantitas item di keranjang berdasarkan kombinasi product id + notes / cartItemId
+  const handleUpdateQuantity = (identifier, newQuantity, notes) => {
+    setCartItems((prev) => {
+      if (newQuantity <= 0) {
+        return prev.filter((item) => {
+          const itemKey = item.cartItemId || `${item.id}__${item.notes || ''}`;
+          if (itemKey === identifier) return false;
+          if (
+            notes !== undefined &&
+            item.id === identifier &&
+            (item.notes || '') === (notes || '')
+          ) {
+            return false;
+          }
+          return true;
+        });
+      }
+      return prev.map((item) => {
+        const itemKey = item.cartItemId || `${item.id}__${item.notes || ''}`;
+        const isMatch =
+          itemKey === identifier ||
+          (notes !== undefined &&
+            item.id === identifier &&
+            (item.notes || '') === (notes || ''));
+
+        return isMatch ? { ...item, quantity: newQuantity } : item;
+      });
+    });
   };
 
   // Kosongkan keranjang
@@ -182,20 +209,45 @@ export default function Cashier() {
     setIsPaymentModalOpen(true);
   };
 
-  // Konfirmasi pembayaran dari PaymentModal
+  // Konfirmasi pembayaran dari PaymentModal → buka PaymentSuccessModal
   const handlePaymentConfirm = ({ method, cashReceived, change }) => {
+    const trxId = `TRX-${String(1000 + transactionCount).padStart(5, '0')}`;
+    const newTransaction = {
+      id: trxId,
+      timestamp: new Date(),
+      cashierName: 'Kasir 01',
+      orderType,
+      selectedTable,
+      cartItems: [...cartItems],
+      subtotal,
+      pb1: Math.round(subtotal * 0.1),
+      total,
+      method,
+      cashReceived,
+      change
+    };
+
+    setCompletedTransaction(newTransaction);
+    setTransactionCount((prev) => prev + 1);
     setIsPaymentModalOpen(false);
-    // TODO: integrate PaymentSuccessModal here
-    alert(
-      `Pembayaran berhasil!\nMetode: ${method === 'qris' ? 'QRIS' : 'Tunai'}${
-        method === 'cash'
-          ? `\nDiterima: Rp ${cashReceived.toLocaleString('id-ID')}\nKembalian: Rp ${change.toLocaleString('id-ID')}`
-          : ''
-      }`
-    );
+    setIsPaymentSuccessOpen(true);
+    // Transaksi sementara dipertahankan untuk kebutuhan struk (Receipt)
+  };
+
+  // Buka modal struk dari PaymentSuccessModal
+  const handleOpenReceipt = () => {
+    setIsPaymentSuccessOpen(false);
+    setIsReceiptOpen(true);
+  };
+
+  // Selesai transaksi & reset state untuk transaksi baru
+  const handleFinishTransaction = () => {
+    setIsPaymentSuccessOpen(false);
+    setIsReceiptOpen(false);
     setCartItems([]);
     setSelectedTable('Meja 01');
     setOrderType('Dine-In');
+    setCompletedTransaction(null);
   };
 
   const handleHoldOrder = () => {
@@ -353,6 +405,26 @@ export default function Cashier() {
           total={total}
           onClose={() => setIsPaymentModalOpen(false)}
           onPaymentConfirm={handlePaymentConfirm}
+        />
+      )}
+
+      {/* Payment Success Modal */}
+      {isPaymentSuccessOpen && completedTransaction && (
+        <PaymentSuccessModal
+          isOpen={isPaymentSuccessOpen}
+          transaction={completedTransaction}
+          onClose={handleFinishTransaction}
+          onViewReceipt={handleOpenReceipt}
+          onFinish={handleFinishTransaction}
+        />
+      )}
+
+      {/* Receipt Modal */}
+      {isReceiptOpen && completedTransaction && (
+        <ReceiptModal
+          isOpen={isReceiptOpen}
+          transaction={completedTransaction}
+          onClose={handleFinishTransaction}
         />
       )}
 

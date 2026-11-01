@@ -20,7 +20,7 @@ export default function CustomizeProductModal({
   onClose,
   onAddToCart
 }) {
-  const initialIce = product?.name === 'Kopi Susu Gula Aren' ? 'Sedikit Es' : 'Es Normal';
+  const initialIce = 'Es Normal';
   const [selectedIce, setSelectedIce] = useState(initialIce);
   const [selectedSugar, setSelectedSugar] = useState('Gula Normal');
   const [customNote, setCustomNote] = useState('');

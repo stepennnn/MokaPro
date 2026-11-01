@@ -31,15 +31,14 @@ export default function DashboardNavbar({
     }
     if (role === 'barista') {
       return [
-        { label: 'Kitchen Display', path: '/kds' }
+        { label: 'Dapur (KDS)', path: '/kds' }
       ];
     }
     return [
-      { label: 'Dashboard', path: '/admin' },
-      { label: 'Inventaris', path: '/admin/inventory' },
-      { label: 'Menu', path: '/admin/menu' },
+      { label: 'Utama', path: '/admin' },
+      { label: 'Stok', path: '/admin/inventory' },
       { label: 'Laporan', path: '/admin/reports' },
-      { label: 'Riwayat', path: '/history' }
+      { label: 'Kelola Menu', path: '/admin/menu' }
     ];
   };
 

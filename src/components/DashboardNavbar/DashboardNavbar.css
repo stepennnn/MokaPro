@@ -186,7 +186,26 @@
 
 /* Responsive */
 @media (max-width: 900px) {
+  .dashboard-navbar-left,
+  .dashboard-navbar-right {
+    flex-shrink: 0;
+  }
+
   .dashboard-navbar-center {
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    min-width: 0;
+    margin: 0 10px;
+    justify-content: flex-start;
+  }
+
+  .dashboard-navbar-center::-webkit-scrollbar {
     display: none;
+  }
+
+  .dashboard-nav-pill-group {
+    flex-shrink: 0;
   }
 }

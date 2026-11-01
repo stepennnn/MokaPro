@@ -6,10 +6,10 @@ import './Cart.css';
  * serta state kosong vs terisi sesuai desain Figma.
  *
  * @param {Object} props
- * @param {Array} props.cartItems - Array item keranjang [{ id, name, price, quantity, notes }]
+ * @param {Array} props.cartItems - Array item keranjang [{ id, name, price, quantity, notes, cartItemId }]
  * @param {string} [props.orderType='Dine-In'] - Tipe pesanan ('Dine-In' | 'Takeaway')
  * @param {string} [props.tableLocation=''] - Lokasi meja (contoh: 'Meja 01' atau 'Tanpa Meja')
- * @param {Function} props.onUpdateQuantity - Callback (productId, newQuantity)
+ * @param {Function} props.onUpdateQuantity - Callback (identifier, newQuantity, notes)
  * @param {Function} props.onResetCart - Callback untuk mengosongkan keranjang
  * @param {Function} [props.onHoldOrder] - Callback untuk tahan pesanan
  * @param {Function} [props.onCheckout] - Callback untuk proses bayar
@@ -86,43 +86,62 @@ export default function Cart({
           </div>
         ) : (
           <div className="cart-items-list">
-            {cartItems.map((item) => (
-              <div key={item.id} className="cart-item-card">
-                <div className="cart-item-header">
-                  <h4 className="cart-item-name">{item.name}</h4>
-                  {item.notes && (
-                    <span className="cart-item-notes">{item.notes}</span>
-                  )}
-                </div>
+            {cartItems.map((item) => {
+              const itemIdentifier =
+                item.cartItemId || `${item.id}__${item.notes || ''}`;
 
-                <div className="cart-item-footer">
-                  <span className="cart-item-total-price">
-                    {formatRupiah(item.price * item.quantity)}
-                  </span>
+              return (
+                <div key={itemIdentifier} className="cart-item-card">
+                  <div className="cart-item-header">
+                    <h4 className="cart-item-name">{item.name}</h4>
+                    {item.notes && (
+                      <span className="cart-item-notes">{item.notes}</span>
+                    )}
+                  </div>
 
-                  {/* Quantity Stepper */}
-                  <div className="cart-qty-stepper">
-                    <button
-                      type="button"
-                      className="cart-qty-btn"
-                      aria-label="Kurangi kuantitas"
-                      onClick={() => onUpdateQuantity && onUpdateQuantity(item.id, item.quantity - 1)}
-                    >
-                      –
-                    </button>
-                    <span className="cart-qty-value">{item.quantity}</span>
-                    <button
-                      type="button"
-                      className="cart-qty-btn"
-                      aria-label="Tambah kuantitas"
-                      onClick={() => onUpdateQuantity && onUpdateQuantity(item.id, item.quantity + 1)}
-                    >
-                      +
-                    </button>
+                  <div className="cart-item-footer">
+                    <span className="cart-item-total-price">
+                      {formatRupiah(item.price * item.quantity)}
+                    </span>
+
+                    {/* Quantity Stepper */}
+                    <div className="cart-qty-stepper">
+                      <button
+                        type="button"
+                        className="cart-qty-btn"
+                        aria-label="Kurangi kuantitas"
+                        onClick={() =>
+                          onUpdateQuantity &&
+                          onUpdateQuantity(
+                            itemIdentifier,
+                            item.quantity - 1,
+                            item.notes
+                          )
+                        }
+                      >
+                        –
+                      </button>
+                      <span className="cart-qty-value">{item.quantity}</span>
+                      <button
+                        type="button"
+                        className="cart-qty-btn"
+                        aria-label="Tambah kuantitas"
+                        onClick={() =>
+                          onUpdateQuantity &&
+                          onUpdateQuantity(
+                            itemIdentifier,
+                            item.quantity + 1,
+                            item.notes
+                          )
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -1,0 +1,265 @@
+/* ============================================================
+   TransactionHistory.css
+   Halaman Riwayat Transaksi — route /history
+   Role: Kasir
+   ============================================================ */
+
+/* Page wrapper */
+.history-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #faf7f2;
+}
+
+/* Main content grows to fill space between navbar and footer */
+.history-main {
+  flex: 1;
+  padding: 32px 24px 40px;
+}
+
+.history-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ---- Page Header ---- */
+.history-header {
+  margin-bottom: 24px;
+}
+
+.history-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c1a0e;
+  margin: 0 0 4px;
+}
+
+.history-subtitle {
+  font-size: 13px;
+  color: #8c7768;
+  margin: 0;
+}
+
+/* ---- Stat Cards Row ---- */
+.history-stats-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.history-stat-card {
+  background: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.history-stat-label {
+  font-size: 12px;
+  color: #8c7768;
+  font-weight: 400;
+}
+
+.history-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c1a0e;
+  line-height: 1.2;
+}
+
+/* ---- Log Pembayaran Card ---- */
+.history-log-card {
+  background: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 14px;
+  padding: 20px 24px 24px;
+}
+
+.history-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.history-log-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2c1a0e;
+  margin: 0;
+}
+
+/* ---- Search Input ---- */
+.history-search-input {
+  background-color: #f7f2eb;
+  border: 1px solid #e8ddd4;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #2c1a0e;
+  width: 200px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.history-search-input::placeholder {
+  color: #b5a89a;
+}
+
+.history-search-input:focus {
+  border-color: #c47c3e;
+}
+
+/* ---- Empty State ---- */
+.history-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.history-empty-text {
+  font-size: 13px;
+  color: #8c7768;
+  text-align: center;
+  margin: 0;
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+/* ---- Data Table ---- */
+.history-table-wrap {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.history-table thead tr {
+  border-bottom: 1px solid #ede7df;
+}
+
+.history-table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8c7768;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.history-table td {
+  padding: 12px 12px;
+  color: #2c1a0e;
+  border-bottom: 1px solid #f3ede6;
+  vertical-align: middle;
+}
+
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tbody tr:hover {
+  background-color: #fdf9f5;
+}
+
+.history-th-right,
+.history-td-right {
+  text-align: right;
+}
+
+.history-td-id {
+  font-family: monospace;
+  font-size: 12px;
+  color: #6b5c50;
+}
+
+/* Payment method badge */
+.history-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.history-badge--qris {
+  background-color: #eef3ff;
+  color: #3b5aca;
+}
+
+.history-badge--tunai {
+  background-color: #edf7ef;
+  color: #2d7a40;
+}
+
+/* ---- Footer ---- */
+.history-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #ede7df;
+  padding: 14px 24px;
+}
+
+.history-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-footer-copy {
+  font-size: 11px;
+  color: #8c7768;
+  margin: 0;
+}
+
+.history-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #8c7768;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #4caf50;
+  display: inline-block;
+}
+
+.status-text {
+  color: #6b5c50;
+  font-size: 11px;
+}
+
+.status-separator {
+  color: #c5b9b0;
+}
+
+.terminal-id {
+  color: #6b5c50;
+  font-size: 11px;
+}

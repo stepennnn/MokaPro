@@ -1,0 +1,315 @@
+/* ============================================================
+   Inventory.css
+   Halaman Inventaris Bahan Mentah (Admin / Pengelola)
+   Source of truth: stok.png
+   ============================================================ */
+
+.inventory-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #faf7f2;
+}
+
+.inventory-main {
+  flex: 1;
+  padding: 24px 0 36px;
+}
+
+.inventory-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* ── Low Stock Alert Banner ──────────────────────────────── */
+.inventory-alert-banner {
+  background-color: #fff0e7;
+  border: 1px solid #fcd3be;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.inventory-alert-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9a3412;
+  flex-shrink: 0;
+}
+
+.inventory-alert-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.inventory-alert-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #9a3412;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.inventory-alert-subtitle {
+  font-size: 11.5px;
+  color: #a73c15;
+  margin: 3px 0 0;
+  line-height: 1.4;
+}
+
+/* ── Two-Column Grid Layout ──────────────────────────────── */
+.inventory-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Common Card Style ───────────────────────────────────── */
+.inventory-card {
+  background-color: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 14px;
+  padding: 22px 24px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(30, 18, 10, 0.04);
+}
+
+.inventory-card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e120a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ── Left Column: Raw Inventory Card ─────────────────────── */
+.inventory-card--raw .inventory-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.inventory-restock-btn {
+  background-color: #3b2519;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.inventory-restock-btn:hover {
+  background-color: #2b1a11;
+}
+
+.inventory-restock-btn:active {
+  transform: scale(0.98);
+}
+
+/* ── Table Styling ───────────────────────────────────────── */
+.inventory-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.inventory-table thead tr th {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8c7768;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #ede7df;
+  letter-spacing: 0.01em;
+}
+
+.inventory-table th.col-name {
+  width: 44%;
+}
+
+.inventory-table th.col-stock {
+  width: 22%;
+}
+
+.inventory-table th.col-min {
+  width: 18%;
+}
+
+.inventory-table th.col-status {
+  width: 16%;
+}
+
+.inventory-table tbody tr td {
+  padding: 14px 0;
+  font-size: 12.5px;
+  border-bottom: 1px solid #f7f1eb;
+  vertical-align: middle;
+}
+
+.inventory-table tbody tr:last-child td {
+  border-bottom: none;
+  padding-bottom: 4px;
+}
+
+.cell-name {
+  font-weight: 600;
+  color: #2b1a11;
+}
+
+.cell-stock {
+  font-weight: 800;
+  color: #1e120a;
+  letter-spacing: -0.01em;
+}
+
+.cell-min {
+  font-weight: 500;
+  color: #7a6355;
+}
+
+/* ── Status Pills ────────────────────────────────────────── */
+.inventory-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  line-height: 1.2;
+}
+
+.inventory-status-pill--aman {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.inventory-status-pill--menipis {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Right Column: Recipe Deduction Card ─────────────────── */
+.inventory-recipes-header {
+  margin-bottom: 16px;
+}
+
+.inventory-recipes-desc {
+  font-size: 11.5px;
+  color: #7a6355;
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
+
+.inventory-recipes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inventory-recipe-item {
+  background-color: #f7f1eb;
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+
+.inventory-recipe-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e120a;
+  margin: 0;
+}
+
+.inventory-recipe-ingredients {
+  font-size: 11px;
+  color: #7a6355;
+  margin: 4px 0 0;
+  line-height: 1.4;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.inventory-footer {
+  border-top: 1px solid #ede7df;
+  background-color: #ffffff;
+  padding: 12px 24px;
+  box-sizing: border-box;
+}
+
+.inventory-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #8c7768;
+}
+
+.inventory-footer-copy {
+  margin: 0;
+}
+
+.inventory-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inventory-footer-status .status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #00875a;
+  font-weight: 600;
+}
+
+.inventory-footer-status .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #00875a;
+  display: inline-block;
+}
+
+.inventory-footer-status .status-separator {
+  color: #c5b8ae;
+}
+
+.inventory-footer-status .terminal-id {
+  color: #7a6355;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .inventory-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .inventory-footer-container {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

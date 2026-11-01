@@ -1,0 +1,155 @@
+/* ============================================================
+   OrderCard.css
+   Card Pesanan KDS Barista & Dapur
+   Source of truth: kds.png
+   ============================================================ */
+
+.order-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 230px;
+  box-sizing: border-box;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ── Status Theme Borders ────────────────────────────────── */
+.order-card--waiting {
+  border: 1.5px solid #f6cf7d;
+}
+
+.order-card--processing {
+  border: 1.5px solid #99c7fb;
+}
+
+.order-card--completed {
+  border: 1.5px solid #a4e6c3;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.order-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  box-sizing: border-box;
+}
+
+.order-card--waiting .order-card-header {
+  background-color: #fff4d6;
+}
+
+.order-card--processing .order-card-header {
+  background-color: #e8f2ff;
+}
+
+.order-card--completed .order-card-header {
+  background-color: #e9f9f1;
+}
+
+.order-card-id {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #1e120a;
+  letter-spacing: -0.01em;
+}
+
+.order-card-table {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e120a;
+}
+
+/* ── Body ────────────────────────────────────────────────── */
+.order-card-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.order-card-customer {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #7a6355;
+  margin-bottom: 10px;
+}
+
+.order-card-items {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e120a;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+.order-card-notes {
+  font-size: 11px;
+  color: #7a6355;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+/* ── Footer / Actions ────────────────────────────────────── */
+.order-card-footer {
+  padding: 10px 16px 16px;
+}
+
+.order-card-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.order-card-btn:active {
+  transform: scale(0.98);
+}
+
+.order-card-btn--waiting {
+  background-color: #2766db;
+  color: #ffffff;
+}
+
+.order-card-btn--waiting:hover {
+  background-color: #1e55be;
+}
+
+.order-card-btn--processing {
+  background-color: #00976c;
+  color: #ffffff;
+}
+
+.order-card-btn--processing:hover {
+  background-color: #007f5a;
+}
+
+.order-card-completed-status {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #00976c;
+  user-select: none;
+}
+
+.order-card-check-icon {
+  font-size: 14px;
+  line-height: 1;
+}

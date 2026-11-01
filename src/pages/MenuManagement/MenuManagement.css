@@ -1,0 +1,219 @@
+/* ============================================================
+   MenuManagement.css
+   Halaman Kelola Menu & Resep (Admin / Pengelola)
+   Source of truth: kelola menu.png
+   ============================================================ */
+
+.menu-management-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #faf7f2;
+}
+
+.menu-management-main {
+  flex: 1;
+  padding: 28px 0 40px;
+}
+
+.menu-management-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* ── Header Title ────────────────────────────────────────── */
+.menu-management-header {
+  margin-bottom: 24px;
+}
+
+.menu-management-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e120a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.menu-management-subtitle {
+  font-size: 13px;
+  color: #7a6355;
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
+
+/* ── Menu Card ───────────────────────────────────────────── */
+.menu-management-card {
+  background-color: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(30, 18, 10, 0.03);
+}
+
+.menu-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.menu-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+/* ── Table Header ────────────────────────────────────────── */
+.menu-table thead tr th {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8c7768;
+  padding-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+
+.menu-table th.col-product {
+  width: 32%;
+}
+
+.menu-table th.col-category {
+  width: 28%;
+}
+
+.menu-table th.col-price {
+  width: 24%;
+}
+
+.menu-table th.col-status {
+  width: 16%;
+}
+
+/* ── Table Body ──────────────────────────────────────────── */
+.menu-table tbody tr td {
+  padding: 13px 0;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.cell-product {
+  font-weight: 600;
+  color: #1e120a;
+}
+
+.cell-category {
+  font-weight: 500;
+  color: #1e120a;
+}
+
+.cell-price {
+  font-weight: 600;
+  color: #1e120a;
+  letter-spacing: -0.01em;
+}
+
+/* ── Status Pill ─────────────────────────────────────────── */
+.menu-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.menu-status-pill:active {
+  transform: scale(0.96);
+}
+
+.menu-status-pill--active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.menu-status-pill--active:hover {
+  background-color: #a7f3d0;
+}
+
+.menu-status-pill--inactive {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.menu-status-pill--inactive:hover {
+  background-color: #e5e7eb;
+}
+
+/* ── Bottom Footnote ─────────────────────────────────────── */
+.menu-management-note {
+  font-size: 11.5px;
+  color: #8c7768;
+  margin-top: 24px;
+  line-height: 1.45;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.menu-management-footer {
+  border-top: 1px solid #ede7df;
+  background-color: #ffffff;
+  padding: 12px 24px;
+  box-sizing: border-box;
+}
+
+.menu-management-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #8c7768;
+}
+
+.menu-management-footer-copy {
+  margin: 0;
+}
+
+.menu-management-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-management-footer-status .status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #00875a;
+  font-weight: 600;
+}
+
+.menu-management-footer-status .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #00875a;
+  display: inline-block;
+}
+
+.menu-management-footer-status .status-separator {
+  color: #c5b8ae;
+}
+
+.menu-management-footer-status .terminal-id {
+  color: #7a6355;
+}
+
+@media (max-width: 768px) {
+  .menu-management-footer-container {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

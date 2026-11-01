@@ -1,0 +1,243 @@
+/* ============================================================
+   Reports.css
+   Halaman Reports / Laporan (Admin / Pengelola)
+   Source of truth: laporan.png
+   ============================================================ */
+
+.reports-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #faf7f2;
+}
+
+.reports-main {
+  flex: 1;
+  padding: 24px 0 36px;
+}
+
+.reports-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* ── Top Stat Cards Row ──────────────────────────────────── */
+.reports-stats-section {
+  margin-bottom: 20px;
+}
+
+.reports-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.reports-stat-card {
+  background-color: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(30, 18, 10, 0.03);
+}
+
+.reports-stat-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #7a6355;
+  margin-bottom: 6px;
+}
+
+.reports-stat-value {
+  font-size: 19px;
+  font-weight: 800;
+  color: #1e120a;
+  letter-spacing: -0.01em;
+}
+
+.reports-stat-trend {
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.reports-stat-trend--up {
+  color: #00875a;
+}
+
+.reports-stat-subtitle {
+  font-size: 11px;
+  color: #7a6355;
+  margin-top: 4px;
+}
+
+/* ── Two-Column Main Content Grid ────────────────────────── */
+.reports-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.reports-card {
+  background-color: #ffffff;
+  border: 1px solid #ede7df;
+  border-radius: 14px;
+  padding: 22px 24px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(30, 18, 10, 0.03);
+}
+
+.reports-card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e120a;
+  margin: 0 0 20px;
+  letter-spacing: -0.01em;
+}
+
+/* ── Left Column: Chart Placeholder ─────────────────────── */
+.reports-card--chart {
+  display: flex;
+  flex-direction: column;
+}
+
+.reports-chart-wrap {
+  flex: 1;
+  min-height: 180px;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+/* ── Right Column: Shift Recap Card ──────────────────────── */
+.reports-card--shift {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.reports-shift-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.reports-shift-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+}
+
+.reports-shift-label {
+  color: #4a3427;
+  font-weight: 500;
+}
+
+.reports-shift-val {
+  color: #1e120a;
+  font-weight: 800;
+}
+
+.reports-shift-btn {
+  width: 100%;
+  background-color: #3b2519;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.reports-shift-btn:hover {
+  background-color: #2b1a11;
+}
+
+.reports-shift-btn:active {
+  transform: scale(0.98);
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.reports-footer {
+  border-top: 1px solid #ede7df;
+  background-color: #ffffff;
+  padding: 12px 24px;
+  box-sizing: border-box;
+}
+
+.reports-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #8c7768;
+}
+
+.reports-footer-copy {
+  margin: 0;
+}
+
+.reports-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reports-footer-status .status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #00875a;
+  font-weight: 600;
+}
+
+.reports-footer-status .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #00875a;
+  display: inline-block;
+}
+
+.reports-footer-status .status-separator {
+  color: #c5b8ae;
+}
+
+.reports-footer-status .terminal-id {
+  color: #7a6355;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .reports-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .reports-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-footer-container {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

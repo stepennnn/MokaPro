@@ -1,0 +1,337 @@
+/* ============================================================
+   ReceiptModal.css
+   Modal Struk Pembayaran — MokaPro POS
+   ============================================================ */
+
+/* ── Overlay ─────────────────────────────────────────────── */
+.receipt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(30, 18, 10, 0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* ── Container ───────────────────────────────────────────── */
+.receipt-modal-container {
+  background: #ffffff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 390px;
+  max-height: 90vh;
+  box-shadow: 0 12px 48px rgba(30, 18, 10, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalScaleIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.receipt-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #ede7df;
+  flex-shrink: 0;
+}
+
+.receipt-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e120a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.receipt-modal-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid #d6c9bc;
+  border-radius: 7px;
+  background: transparent;
+  color: #7a6355;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.receipt-modal-close-btn:hover {
+  background: #f7f1eb;
+  border-color: #b5a49a;
+  color: #3b2519;
+}
+
+/* ── Scrollable Receipt Paper Area ───────────────────────── */
+.receipt-paper-wrapper {
+  padding: 14px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ── Inner Receipt Paper Card ────────────────────────────── */
+.receipt-paper {
+  background: #ffffff;
+  border: 1px solid #e8ddd4;
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-sizing: border-box;
+}
+
+/* ── Brand Header ────────────────────────────────────────── */
+.receipt-brand-header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.receipt-brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.receipt-coffee-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.receipt-brand-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e120a;
+  letter-spacing: -0.02em;
+}
+
+.receipt-store-branch {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4a3427;
+  margin-bottom: 4px;
+}
+
+.receipt-title-badge {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #8c7768;
+  letter-spacing: 0.08em;
+}
+
+/* ── Meta Rows ───────────────────────────────────────────── */
+.receipt-meta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.receipt-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.receipt-meta-label {
+  color: #7a6355;
+  font-weight: 500;
+}
+
+.receipt-meta-val {
+  color: #1e120a;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+.receipt-divider {
+  border-top: 1px dashed #dcd1c6;
+  margin: 10px 0;
+}
+
+/* ── Items List ──────────────────────────────────────────── */
+.receipt-items-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.receipt-item-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.receipt-item-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e120a;
+}
+
+.receipt-item-calc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.receipt-item-qty-price {
+  color: #6a5345;
+}
+
+.receipt-item-subtotal {
+  font-weight: 600;
+  color: #1e120a;
+}
+
+.receipt-item-notes {
+  font-size: 10.5px;
+  color: #8c7768;
+  font-style: normal;
+}
+
+.receipt-item-empty {
+  font-size: 11px;
+  color: #8c7768;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* ── Totals Section ──────────────────────────────────────── */
+.receipt-totals-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.receipt-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.receipt-total-label {
+  color: #7a6355;
+  font-weight: 500;
+}
+
+.receipt-total-val {
+  color: #1e120a;
+  font-weight: 600;
+}
+
+.receipt-total-row.receipt-grand-total {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #1e120a;
+  margin: 4px 0;
+}
+
+.receipt-total-row.receipt-grand-total .receipt-total-label,
+.receipt-total-row.receipt-grand-total .receipt-total-val {
+  font-weight: 800;
+  color: #1e120a;
+}
+
+/* ── Footer Message ──────────────────────────────────────── */
+.receipt-footer-msg {
+  text-align: center;
+  margin-top: 6px;
+}
+
+.receipt-status-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: #4a3427;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+
+.receipt-thank-text {
+  font-size: 11px;
+  color: #8c7768;
+}
+
+/* ── Action Buttons ──────────────────────────────────────── */
+.receipt-modal-actions {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 18px;
+  border-top: 1px solid #ede7df;
+  flex-shrink: 0;
+}
+
+.receipt-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, transform 0.1s, opacity 0.15s;
+}
+
+.receipt-action-btn:active {
+  transform: scale(0.98);
+}
+
+.receipt-action-btn.btn-print {
+  background: #efe6dc;
+  color: #3b2519;
+}
+
+.receipt-action-btn.btn-print:hover {
+  background: #e4d7cb;
+}
+
+.receipt-action-btn.btn-close {
+  background: #3b2519;
+  color: #ffffff;
+}
+
+.receipt-action-btn.btn-close:hover {
+  background: #2b1a11;
+}
+
+/* ── Print Media ─────────────────────────────────────────── */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #receipt-printable-area,
+  #receipt-printable-area * {
+    visibility: visible;
+  }
+  #receipt-printable-area {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 80mm;
+    border: none;
+    padding: 0;
+  }
+}

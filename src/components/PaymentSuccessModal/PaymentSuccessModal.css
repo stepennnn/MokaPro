@@ -1,0 +1,168 @@
+/* ============================================================
+   PaymentSuccessModal.css
+   Modal Status Pembayaran Berhasil — MokaPro POS
+   ============================================================ */
+
+/* ── Overlay ─────────────────────────────────────────────── */
+.payment-success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(30, 18, 10, 0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* ── Container ───────────────────────────────────────────── */
+.payment-success-container {
+  background: #ffffff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 410px;
+  box-shadow: 0 12px 48px rgba(30, 18, 10, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalScaleIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.payment-success-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid #ede7df;
+}
+
+.payment-success-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e120a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.payment-success-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid #d6c9bc;
+  border-radius: 7px;
+  background: transparent;
+  color: #7a6355;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.payment-success-close-btn:hover {
+  background: #f7f1eb;
+  border-color: #b5a49a;
+  color: #3b2519;
+}
+
+/* ── Content Body ────────────────────────────────────────── */
+.payment-success-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 28px 16px;
+}
+
+.payment-success-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.payment-success-heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e120a;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.payment-success-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #7a6355;
+  margin: 0 0 18px;
+  max-width: 320px;
+}
+
+.payment-success-amount {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1e120a;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.payment-success-meta {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8c7768;
+  letter-spacing: 0.01em;
+}
+
+/* ── Action Buttons ──────────────────────────────────────── */
+.payment-success-actions {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px 22px;
+}
+
+.payment-success-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, transform 0.1s, opacity 0.15s;
+}
+
+.payment-success-btn:active {
+  transform: scale(0.98);
+}
+
+.payment-success-btn.btn-receipt {
+  background: #efe6dc;
+  color: #3b2519;
+}
+
+.payment-success-btn.btn-receipt:hover {
+  background: #e4d7cb;
+}
+
+.payment-success-btn.btn-finish {
+  background: #3b2519;
+  color: #ffffff;
+}
+
+.payment-success-btn.btn-finish:hover {
+  background: #2b1a11;
+}
