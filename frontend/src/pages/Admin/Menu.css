@@ -1,0 +1,176 @@
+.menu-page {
+  min-height: 100vh;
+  background-color: #faf7f2;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-main {
+  flex: 1;
+  padding: 32px 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header Section */
+.header-section {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #261a15;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #7a6d64;
+  margin: 0;
+}
+
+/* Table Card Container */
+.table-card {
+  background: white;
+  border: 1px solid #ede5dc;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(59, 37, 25, 0.03);
+  overflow-x: auto; /* Agar tabel bisa di-scroll jika layar kecil */
+}
+
+/* Data Table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.data-table th {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #7a6d64;
+  font-weight: 600;
+  border-bottom: 1px solid #f2ece6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.data-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: #261a15;
+  border-bottom: 1px solid #f2ece6;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover {
+  background-color: #faf7f2;
+}
+
+/* Status Badge */
+.status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.safe {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.status.low {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+/* Edit Mode Inputs */
+.edit-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #dcd4cb;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #261a15;
+  background-color: #faf7f2;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.edit-input:focus {
+  border-color: #bd733d;
+  background-color: #ffffff;
+}
+
+/* Action Buttons */
+.btn-edit {
+  background-color: #3b2519;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-edit:hover {
+  background-color: #4f3323;
+}
+
+.btn-save {
+  background-color: #10b981;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.btn-save:hover {
+  background-color: #059669;
+}
+
+.btn-cancel {
+  background-color: #ef4444;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-cancel:hover {
+  background-color: #dc2626;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-main {
+    padding: 24px 16px;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+}

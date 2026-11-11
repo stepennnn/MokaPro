@@ -1,0 +1,15 @@
+.seat-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1100;
+}
+.seat-modal-content {
+  background: white; padding: 24px; border-radius: 12px; width: 300px; text-align: center;
+}
+.seat-modal-content h3 { margin: 0 0 10px 0; color: #261a15; }
+.seat-modal-content p { font-size: 14px; color: #7a6d64; margin-bottom: 20px; }
+.seat-input-group { display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 24px; }
+.seat-input-group button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #ede5dc; background: #faf7f2; font-size: 20px; cursor: pointer; }
+.seat-input-group input { width: 60px; text-align: center; font-size: 24px; font-weight: bold; border: none; background: transparent; }
+.seat-modal-actions { display: flex; gap: 10px; }
+.seat-modal-actions button { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+.btn-cancel { background: #f2ece6; color: #261a15; }
+.btn-confirm { background: #3b2519; color: white; }
