@@ -1,3 +1,44 @@
+## MokaPro backend setup
+
+### Requirements
+
+- PHP 8.3 with `pdo_mysql`
+- Composer
+- MySQL with InnoDB support
+
+### Local development
+
+Run these commands from `backend`:
+
+```powershell
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+composer install
+if (Select-String -Path .env -Pattern '^APP_KEY=$' -Quiet) { php artisan key:generate }
+```
+
+Create two empty databases named `mokapro_dev` and `mokapro_test` in your local MySQL instance. Configure `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE=mokapro_dev`, `DB_USERNAME`, and `DB_PASSWORD` in the ignored local `.env`. Use a dedicated local database user; never use production credentials or commit `.env`.
+
+Before migrating, verify that `DB_DATABASE` is exactly `mokapro_dev`. Then run:
+
+```powershell
+php artisan migrate
+php artisan test
+```
+
+The default test command uses the isolated SQLite in-memory database from `phpunit.xml`. Tests involving MySQL row locks must target the separate empty `mokapro_test` database:
+
+```powershell
+$env:DB_CONNECTION = 'mysql'
+$env:DB_DATABASE = 'mokapro_test'
+try {
+    php artisan test
+} finally {
+    Remove-Item Env:DB_CONNECTION, Env:DB_DATABASE -ErrorAction SilentlyContinue
+}
+```
+
+Never run `migrate:fresh` against `mokapro_dev`, an existing application database, or production. `MOKAPRO_TAX_RATE` defaults to `0.1000` (10%); `APP_TIMEZONE` defaults to `Asia/Jakarta`. Both values are read through Laravel config.
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
