@@ -7,12 +7,6 @@ const SUGAR_OPTIONS = ['Gula Normal', 'Sedikit Gula', 'Ekstra Gula'];
 /**
  * CustomizeProductModal component
  * Modal kustomisasi produk sebelum masuk ke keranjang kasir
- *
- * @param {Object} props
- * @param {boolean} props.isOpen - Status buka/tutup modal
- * @param {Object} props.product - Data produk yang sedang dikustomisasi
- * @param {Function} props.onClose - Callback saat modal ditutup
- * @param {Function} props.onAddToCart - Callback untuk memasukkan produk yang telah dikonfigurasi ke keranjang
  */
 export default function CustomizeProductModal({
   isOpen,
@@ -20,12 +14,28 @@ export default function CustomizeProductModal({
   onClose,
   onAddToCart
 }) {
+  const productModifiers = Array.isArray(product?.modifiers) ? product.modifiers : [];
+  const hasCustomModifiers = productModifiers.length > 0;
+
   const initialIce = product?.name === 'Kopi Susu Gula Aren' ? 'Sedikit Es' : 'Es Normal';
   const [selectedIce, setSelectedIce] = useState(initialIce);
   const [selectedSugar, setSelectedSugar] = useState('Gula Normal');
+  const [selectedModifiers, setSelectedModifiers] = useState(() => {
+    const defaults = {};
+    productModifiers.forEach((mod) => {
+      if (mod.type === 'choice') {
+        const choices = String(mod.value || '').split(',').map((s) => s.trim()).filter(Boolean);
+        defaults[mod.id] = choices[0] || mod.value || '';
+      } else if (mod.type === 'boolean') {
+        defaults[mod.id] = false;
+      } else {
+        defaults[mod.id] = '';
+      }
+    });
+    return defaults;
+  });
   const [customNote, setCustomNote] = useState('');
 
-  // Handle tombol Escape untuk menutup modal
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -41,21 +51,35 @@ export default function CustomizeProductModal({
   }
 
   const formatPrice = (val) => {
-    return `Rp ${val.toLocaleString('id-ID')}`;
+    return `Rp ${Number(val || 0).toLocaleString('id-ID')}`;
   };
 
   const handleConfirm = () => {
-    // Susun ringkasan catatan modifikasi
     const notesArray = [];
-    if (selectedIce) notesArray.push(selectedIce);
-    if (selectedSugar) notesArray.push(selectedSugar);
-    if (customNote.trim()) notesArray.push(customNote.trim());
+    const chosenModifierIds = [];
 
-    const finalNotes = notesArray.join(', ');
+    if (hasCustomModifiers) {
+      productModifiers.forEach((mod) => {
+        const val = selectedModifiers[mod.id];
+        if (mod.type === 'boolean' && val) {
+          notesArray.push(mod.name);
+          chosenModifierIds.push(Number(mod.id));
+        } else if (typeof val === 'string' && val.trim()) {
+          notesArray.push(`${mod.name}: ${val.trim()}`);
+          chosenModifierIds.push(Number(mod.id));
+        }
+      });
+    } else {
+      if (selectedIce) notesArray.push(selectedIce);
+      if (selectedSugar) notesArray.push(selectedSugar);
+    }
+
+    if (customNote.trim()) notesArray.push(customNote.trim());
 
     onAddToCart({
       ...product,
-      notes: finalNotes
+      notes: notesArray.join(', '),
+      modifierIds: chosenModifierIds,
     });
 
     onClose();
@@ -73,7 +97,6 @@ export default function CustomizeProductModal({
         className="customize-modal-container"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header: Title & Close Button */}
         <div className="customize-modal-header">
           <h2 id="customize-modal-title" className="customize-modal-title">
             {product.name}
@@ -102,46 +125,104 @@ export default function CustomizeProductModal({
           </button>
         </div>
 
-        {/* Product Price */}
         <div className="customize-modal-price">
           {formatPrice(product.price)}
         </div>
 
-        {/* Option 1: Ice Level */}
-        <div className="customize-option-group">
-          <label className="customize-option-label">Opsi Es (Ice Level)</label>
-          <div className="customize-option-buttons">
-            {ICE_OPTIONS.map((opt) => (
-              <button
-                key={opt}
-                type="button"
-                className={`customize-opt-btn ${selectedIce === opt ? 'active' : ''}`}
-                onClick={() => setSelectedIce(opt)}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
+        {hasCustomModifiers ? (
+          productModifiers.map((mod) => {
+            if (mod.type === 'choice') {
+              const choices = String(mod.value || '').split(',').map((s) => s.trim()).filter(Boolean);
+              const options = choices.length > 0 ? choices : [mod.value];
+              return (
+                <div key={mod.id} className="customize-option-group">
+                  <label className="customize-option-label">{mod.name}</label>
+                  <div className="customize-option-buttons">
+                    {options.map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        className={`customize-opt-btn ${selectedModifiers[mod.id] === opt ? 'active' : ''}`}
+                        onClick={() => setSelectedModifiers((prev) => ({ ...prev, [mod.id]: opt }))}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
 
-        {/* Option 2: Sugar Level */}
-        <div className="customize-option-group">
-          <label className="customize-option-label">Opsi Manis (Sugar Level)</label>
-          <div className="customize-option-buttons">
-            {SUGAR_OPTIONS.map((opt) => (
-              <button
-                key={opt}
-                type="button"
-                className={`customize-opt-btn ${selectedSugar === opt ? 'active' : ''}`}
-                onClick={() => setSelectedSugar(opt)}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
+            if (mod.type === 'boolean') {
+              const active = Boolean(selectedModifiers[mod.id]);
+              return (
+                <div key={mod.id} className="customize-option-group">
+                  <label className="customize-option-label">{mod.name}</label>
+                  <div className="customize-option-buttons">
+                    <button
+                      type="button"
+                      className={`customize-opt-btn ${active ? 'active' : ''}`}
+                      onClick={() => setSelectedModifiers((prev) => ({ ...prev, [mod.id]: !active }))}
+                    >
+                      {active ? `Ya (${mod.value})` : `Tambah ${mod.name}`}
+                    </button>
+                  </div>
+                </div>
+              );
+            }
 
-        {/* Option 3: Custom Notes */}
+            return (
+              <div key={mod.id} className="customize-option-group">
+                <label htmlFor={`mod-input-${mod.id}`} className="customize-option-label">
+                  {mod.name}
+                </label>
+                <input
+                  id={`mod-input-${mod.id}`}
+                  type="text"
+                  className="customize-notes-input"
+                  value={selectedModifiers[mod.id] || ''}
+                  onChange={(e) => setSelectedModifiers((prev) => ({ ...prev, [mod.id]: e.target.value }))}
+                  placeholder={mod.value || ''}
+                />
+              </div>
+            );
+          })
+        ) : (
+          <>
+            <div className="customize-option-group">
+              <label className="customize-option-label">Opsi Es (Ice Level)</label>
+              <div className="customize-option-buttons">
+                {ICE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt}
+                    type="button"
+                    className={`customize-opt-btn ${selectedIce === opt ? 'active' : ''}`}
+                    onClick={() => setSelectedIce(opt)}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="customize-option-group">
+              <label className="customize-option-label">Opsi Manis (Sugar Level)</label>
+              <div className="customize-option-buttons">
+                {SUGAR_OPTIONS.map((opt) => (
+                  <button
+                    key={opt}
+                    type="button"
+                    className={`customize-opt-btn ${selectedSugar === opt ? 'active' : ''}`}
+                    onClick={() => setSelectedSugar(opt)}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
         <div className="customize-option-group">
           <label htmlFor="custom-notes-input" className="customize-option-label">
             Catatan Khusus
@@ -156,7 +237,6 @@ export default function CustomizeProductModal({
           />
         </div>
 
-        {/* Submit Button */}
         <button
           type="button"
           className="customize-modal-submit-btn"

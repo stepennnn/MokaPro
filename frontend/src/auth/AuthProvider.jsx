@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ApiError, apiFetch } from '../lib/api';
+import { ApiError, apiFetch, setUnauthorizedHandler } from '../lib/api';
 import { AuthContext } from './authContext';
 
 async function fetchSession() {
@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
       if (requestError instanceof ApiError && requestError.status === 401) {
         setUser(null);
         setRole(null);
+        setError(null);
         return null;
       }
 
@@ -37,6 +38,18 @@ export function AuthProvider({ children }) {
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      setUser(null);
+      setRole(null);
+      setError(null);
+    });
+
+    return () => {
+      setUnauthorizedHandler(null);
+    };
   }, []);
 
   useEffect(() => {

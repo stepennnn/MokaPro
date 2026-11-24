@@ -66,6 +66,28 @@ class RecipeController extends Controller
         return response()->json(['data' => $this->ingredientData($ingredient)]);
     }
 
+    public function modifiersIndex(): JsonResponse
+    {
+        $modifiers = Modifier::query()
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Modifier $modifier): array => $this->modifierData($modifier))
+            ->values();
+
+        return response()->json(['data' => $modifiers]);
+    }
+
+    public function showActiveRecipe(Product $product): JsonResponse
+    {
+        $recipe = $product->activeRecipe()
+            ->with('recipeIngredients.ingredient')
+            ->first();
+
+        return response()->json([
+            'data' => $recipe === null ? null : $this->recipeData($recipe),
+        ]);
+    }
+
     public function storeModifier(SaveModifierRequest $request): JsonResponse
     {
         $data = $request->validated();

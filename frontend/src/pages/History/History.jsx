@@ -1,27 +1,89 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import DashboardNavbar from '../../components/DashboardNavbar/DashboardNavbar';
+import { apiFetch } from '../../lib/api';
 import './History.css';
+
+function formatPaymentMethod(method) {
+  if (!method) return '-';
+  return String(method).toLowerCase() === 'qris' ? 'QRIS' : 'Tunai';
+}
+
+function formatDateTime(isoString) {
+  if (!isoString) return '-';
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return isoString;
+  return date.toLocaleString('id-ID');
+}
 
 export default function History() {
   const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Ambil data saat halaman dimuat
-  useEffect(() => {
-    const savedHistory = JSON.parse(localStorage.getItem('mokapro_history')) || [];
-    setHistory(savedHistory);
+  const fetchOrderHistory = useCallback(async () => {
+    const response = await apiFetch('/api/orders');
+    const payload = await response.json();
+    return Array.isArray(payload.data) ? payload.data : [];
   }, []);
 
-  // Hitung total pendapatan
-  const totalPendapatan = history.reduce((acc, curr) => acc + curr.total, 0);
+  const loadOrders = useCallback(async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      setHistory(await fetchOrderHistory());
+    } catch (requestError) {
+      setError(requestError.message || 'Gagal memuat riwayat transaksi.');
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchOrderHistory]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchOrderHistory()
+      .then((data) => {
+        if (!cancelled) {
+          setHistory(data);
+          setError('');
+        }
+      })
+      .catch((requestError) => {
+        if (!cancelled) {
+          setError(requestError.message || 'Gagal memuat riwayat transaksi.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchOrderHistory]);
+
+  const totalPendapatan = history.reduce((acc, curr) => acc + Number(curr.total || 0), 0);
 
   return (
     <div className="history-page">
-      <DashboardNavbar role="cashier" />
+      <DashboardNavbar />
       <main className="history-main">
         <div className="header-section">
           <h1 className="page-title">Riwayat Transaksi</h1>
-          <p className="page-subtitle">Daftar pembayaran yang berhasil dikonfirmasi.</p>
+          <p className="page-subtitle">Daftar pembayaran yang berhasil dikonfirmasi di database.</p>
         </div>
+
+        {error && (
+          <div role="alert" style={{ marginBottom: '16px', padding: '12px 16px', borderRadius: '10px', backgroundColor: '#fef2f2', color: '#b91c1c', fontSize: '14px' }}>
+            {error}{' '}
+            <button type="button" onClick={loadOrders} style={{ marginLeft: '8px', textDecoration: 'underline', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }}>
+              Coba lagi
+            </button>
+          </div>
+        )}
 
         <div className="summary-cards">
           <div className="summary-card">
@@ -38,8 +100,12 @@ export default function History() {
           <div className="log-header">
             <h3>Log Pembayaran</h3>
           </div>
-          
-          {history.length === 0 ? (
+
+          {loading ? (
+            <div className="empty-log">
+              <p role="status">Memuat riwayat transaksi...</p>
+            </div>
+          ) : history.length === 0 ? (
             <div className="empty-log">
               <p>Belum ada transaksi. Silakan buat pesanan di halaman Kasir.</p>
             </div>
@@ -51,17 +117,19 @@ export default function History() {
                   <th>Waktu</th>
                   <th>Tipe</th>
                   <th>Metode</th>
+                  <th>Status</th>
                   <th>Total</th>
                 </tr>
               </thead>
               <tbody>
                 {history.map((trx) => (
                   <tr key={trx.id}>
-                    <td><strong>{trx.id}</strong></td>
-                    <td>{trx.date}</td>
-                    <td>{trx.type}</td>
-                    <td>{trx.method}</td>
-                    <td>Rp {trx.total.toLocaleString('id-ID')}</td>
+                    <td><strong>{trx.order_number}</strong></td>
+                    <td>{formatDateTime(trx.created_at)}</td>
+                    <td>{trx.type}{trx.table_number ? ` (${trx.table_number})` : ''}</td>
+                    <td>{formatPaymentMethod(trx.payment_method)}</td>
+                    <td>{trx.status}</td>
+                    <td>Rp {Number(trx.total || 0).toLocaleString('id-ID')}</td>
                   </tr>
                 ))}
               </tbody>

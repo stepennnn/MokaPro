@@ -18,6 +18,7 @@ export default function Cart({
   cartItems = [],
   orderType = 'Dine-In',
   tableLocation = '',
+  taxRate = 0.1,
   onUpdateQuantity,
   onResetCart,
   onHoldOrder,
@@ -25,13 +26,16 @@ export default function Cart({
 }) {
   const isCartEmpty = cartItems.length === 0;
 
-  // Hitung subtotal, pajak PB1 10%, dan total pembayaran
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const tax = Math.round(subtotal * 0.1);
-  const total = subtotal + tax;
+  // Hitung subtotal, pajak (sinkron dengan MOKAPRO_TAX_RATE & pembulatan 2 desimal server), dan total
+  const subtotal = Math.round(
+    cartItems.reduce((acc, item) => acc + Number(item.price || 0) * item.quantity, 0) * 100,
+  ) / 100;
+  const tax = Math.round(subtotal * Number(taxRate) * 100) / 100;
+  const total = Math.round((subtotal + tax) * 100) / 100;
+  const taxPercentLabel = Math.round(Number(taxRate) * 10000) / 100;
 
   const formatRupiah = (val) => {
-    return `Rp ${val.toLocaleString('id-ID')}`;
+    return `Rp ${Number(val || 0).toLocaleString('id-ID')}`;
   };
 
   const displayLocation = tableLocation || (isCartEmpty ? 'Tanpa Meja' : 'Meja 01');
@@ -86,43 +90,46 @@ export default function Cart({
           </div>
         ) : (
           <div className="cart-items-list">
-            {cartItems.map((item) => (
-              <div key={item.id} className="cart-item-card">
-                <div className="cart-item-header">
-                  <h4 className="cart-item-name">{item.name}</h4>
-                  {item.notes && (
-                    <span className="cart-item-notes">{item.notes}</span>
-                  )}
-                </div>
+            {cartItems.map((item) => {
+              const itemKey = item.cartKey || `${item.id}::${item.notes || ''}`;
+              return (
+                <div key={itemKey} className="cart-item-card">
+                  <div className="cart-item-header">
+                    <h4 className="cart-item-name">{item.name}</h4>
+                    {item.notes && (
+                      <span className="cart-item-notes">{item.notes}</span>
+                    )}
+                  </div>
 
-                <div className="cart-item-footer">
-                  <span className="cart-item-total-price">
-                    {formatRupiah(item.price * item.quantity)}
-                  </span>
+                  <div className="cart-item-footer">
+                    <span className="cart-item-total-price">
+                      {formatRupiah(Number(item.price || 0) * item.quantity)}
+                    </span>
 
-                  {/* Quantity Stepper */}
-                  <div className="cart-qty-stepper">
-                    <button
-                      type="button"
-                      className="cart-qty-btn"
-                      aria-label="Kurangi kuantitas"
-                      onClick={() => onUpdateQuantity && onUpdateQuantity(item.id, item.quantity - 1)}
-                    >
-                      –
-                    </button>
-                    <span className="cart-qty-value">{item.quantity}</span>
-                    <button
-                      type="button"
-                      className="cart-qty-btn"
-                      aria-label="Tambah kuantitas"
-                      onClick={() => onUpdateQuantity && onUpdateQuantity(item.id, item.quantity + 1)}
-                    >
-                      +
-                    </button>
+                    {/* Quantity Stepper */}
+                    <div className="cart-qty-stepper">
+                      <button
+                        type="button"
+                        className="cart-qty-btn"
+                        aria-label="Kurangi kuantitas"
+                        onClick={() => onUpdateQuantity && onUpdateQuantity(itemKey, item.quantity - 1)}
+                      >
+                        –
+                      </button>
+                      <span className="cart-qty-value">{item.quantity}</span>
+                      <button
+                        type="button"
+                        className="cart-qty-btn"
+                        aria-label="Tambah kuantitas"
+                        onClick={() => onUpdateQuantity && onUpdateQuantity(itemKey, item.quantity + 1)}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -135,7 +142,7 @@ export default function Cart({
         </div>
 
         <div className="cart-summary-row">
-          <span className="cart-summary-label">Pajak Resto (PB1 10%)</span>
+          <span className="cart-summary-label">Pajak Resto (PB1 {taxPercentLabel}%)</span>
           <span className="cart-summary-val">{formatRupiah(tax)}</span>
         </div>
 

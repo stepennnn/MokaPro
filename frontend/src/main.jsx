@@ -4,9 +4,12 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App.jsx';
 
+const baseUrl = import.meta.env.BASE_URL || '/';
+const routerBasename = baseUrl === '/' ? undefined : baseUrl.replace(/\/+$/, '');
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/MokaPro">
+    <BrowserRouter basename={routerBasename}>
       <App />
     </BrowserRouter>
   </StrictMode>,

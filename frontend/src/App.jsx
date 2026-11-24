@@ -62,7 +62,7 @@ export default function App() {
         <Route path="/admin/pin" element={<AdminPin />} />
 
         <Route path="/cashier" element={(
-          <ProtectedRoute allowedRoles={['cashier']}>
+          <ProtectedRoute allowedRoles={['cashier', 'admin']}>
             <Cashier />
           </ProtectedRoute>
         )} />
@@ -77,7 +77,7 @@ export default function App() {
           </ProtectedRoute>
         )} />
         <Route path="/kds" element={(
-          <ProtectedRoute allowedRoles={['barista']}>
+          <ProtectedRoute allowedRoles={['barista', 'admin']}>
             <KDS />
           </ProtectedRoute>
         )} />

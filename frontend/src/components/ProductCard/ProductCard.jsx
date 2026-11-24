@@ -12,7 +12,7 @@ export default function ProductCard({ product, onAddToCart }) {
   const { name, price, image } = product;
 
   const formatPrice = (val) => {
-    return `Rp ${val.toLocaleString('id-ID')}`;
+    return `Rp ${Number(val || 0).toLocaleString('id-ID')}`;
   };
 
   const handleClick = () => {

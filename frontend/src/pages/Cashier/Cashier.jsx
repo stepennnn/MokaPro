@@ -1,11 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import DashboardNavbar from '../../components/DashboardNavbar/DashboardNavbar';
 import ProductGrid from '../../components/ProductGrid/ProductGrid';
 import Cart from '../../components/Cart/Cart';
 import CustomizeProductModal from '../../components/CustomizeProductModal/CustomizeProductModal';
 import TableSelectionModal from '../../components/TableSelectionModal/TableSelectionModal';
-import SeatSelectionModal from '../../components/SeatSelectionModal/SeatSelectionModal'; // Import Modal Baru
+import SeatSelectionModal from '../../components/SeatSelectionModal/SeatSelectionModal';
 import PaymentModal from '../../components/PaymentModal/PaymentModal';
+import { apiFetch } from '../../lib/api';
 import espressoImg from '../../assets/product-espresso.png';
 import latteImg from '../../assets/product-latte.png';
 import kopiSusuImg from '../../assets/product-kopisusu.png';
@@ -14,53 +15,136 @@ import v60Img from '../../assets/product-v60.png';
 import croissantImg from '../../assets/product-croissant.png';
 import './Cashier.css';
 
-const CATEGORIES = [
-  'Semua',
-  'Espresso Based',
-  'Non-Coffee',
-  'Manual Brew',
-  'Pastry & Food'
-];
+function resolveProductImage(name = '') {
+  const lower = name.toLowerCase();
+  if (lower.includes('kopi susu')) return kopiSusuImg;
+  if (lower.includes('matcha')) return matchaImg;
+  if (lower.includes('latte')) return latteImg;
+  if (lower.includes('v60')) return v60Img;
+  if (lower.includes('croissant')) return croissantImg;
+  return espressoImg;
+}
+
+function normalizeProduct(raw) {
+  const categoryName = typeof raw.category === 'object' && raw.category !== null
+    ? raw.category.name
+    : (raw.category || '');
+
+  return {
+    id: Number(raw.id),
+    code: raw.code || '',
+    name: raw.name || '',
+    category: categoryName,
+    categoryId: typeof raw.category === 'object' && raw.category !== null ? raw.category.id : null,
+    price: Number(raw.price) || 0,
+    active: Boolean(raw.active),
+    modifiers: Array.isArray(raw.modifiers) ? raw.modifiers : [],
+    image: resolveProductImage(raw.name),
+  };
+}
+
+function buildCartKey(productId, notes = '') {
+  return `${productId}::${notes || ''}`;
+}
 
 export default function Cashier() {
-  // State Produk & Filter
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(['Semua']);
+  const [taxRate, setTaxRate] = useState(0.1);
+  const [loadingCatalog, setLoadingCatalog] = useState(true);
+  const [catalogError, setCatalogError] = useState('');
+
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // State Keranjang & Pesanan
   const [cartItems, setCartItems] = useState([]);
   const [orderType, setOrderType] = useState('Dine-In');
   const [selectedTable, setSelectedTable] = useState('Tanpa Meja');
-  
-  // State Modals
+  const [seatCount, setSeatCount] = useState(1);
+
   const [isCustomizeModalOpen, setIsCustomizeModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isTableModalOpen, setIsTableModalOpen] = useState(false);
-  const [isSeatModalOpen, setIsSeatModalOpen] = useState(false); // State Modal Input Kursi
-  const [pendingTable, setPendingTable] = useState(null); // Menyimpan meja sementara sebelum input kursi
+  const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
+  const [pendingTable, setPendingTable] = useState(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  // Ambil data produk dari localStorage (atau fallback)
-  useEffect(() => {
-    const savedProducts = JSON.parse(localStorage.getItem('mokapro_products'));
-    
-    if (savedProducts) {
-      const activeProducts = savedProducts.filter(p => p.status === 'Aktif');
-      const mappedProducts = activeProducts.map(dbProduct => {
-        let img = espressoImg; 
-        if (dbProduct.name.includes('Latte')) img = latteImg;
-        if (dbProduct.name.includes('Kopi Susu')) img = kopiSusuImg;
-        if (dbProduct.name.includes('Matcha')) img = matchaImg;
-        if (dbProduct.name.includes('V60')) img = v60Img;
-        if (dbProduct.name.includes('Croissant')) img = croissantImg;
-        return { ...dbProduct, image: img };
-      });
-      setProducts(mappedProducts);
-    }
+  const [submittingOrder, setSubmittingOrder] = useState(false);
+  const [orderError, setOrderError] = useState('');
+  const [orderFeedback, setOrderFeedback] = useState('');
+
+  const fetchCatalogData = useCallback(async () => {
+    const [productsResponse, categoriesResponse, configResponse] = await Promise.all([
+      apiFetch('/api/products'),
+      apiFetch('/api/categories'),
+      apiFetch('/api/config'),
+    ]);
+
+    const [productsPayload, categoriesPayload, configPayload] = await Promise.all([
+      productsResponse.json(),
+      categoriesResponse.json(),
+      configResponse.json(),
+    ]);
+
+    const normalizedProducts = Array.isArray(productsPayload.data)
+      ? productsPayload.data.map(normalizeProduct).filter((p) => p.active)
+      : [];
+    const categoryNames = Array.isArray(categoriesPayload.data)
+      ? categoriesPayload.data.map((c) => c.name).filter(Boolean)
+      : [];
+    const parsedTaxRate = Number(configPayload?.tax_rate);
+
+    return {
+      products: normalizedProducts,
+      categories: ['Semua', ...categoryNames],
+      taxRate: Number.isFinite(parsedTaxRate) && parsedTaxRate >= 0 ? parsedTaxRate : 0.1,
+    };
   }, []);
 
-  // Filter Produk
+  const loadCatalog = useCallback(async () => {
+    setLoadingCatalog(true);
+    setCatalogError('');
+
+    try {
+      const result = await fetchCatalogData();
+      setProducts(result.products);
+      setCategories(result.categories);
+      setTaxRate(result.taxRate);
+    } catch (requestError) {
+      setCatalogError(requestError.message || 'Gagal memuat katalog menu dari server.');
+    } finally {
+      setLoadingCatalog(false);
+    }
+  }, [fetchCatalogData]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchCatalogData()
+      .then((result) => {
+        if (!cancelled) {
+          setProducts(result.products);
+          setCategories(result.categories);
+          setTaxRate(result.taxRate);
+          setCatalogError('');
+        }
+      })
+      .catch((requestError) => {
+        if (!cancelled) {
+          setCatalogError(requestError.message || 'Gagal memuat katalog menu dari server.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoadingCatalog(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchCatalogData]);
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchCategory = selectedCategory === 'Semua' || product.category === selectedCategory;
@@ -69,11 +153,12 @@ export default function Cashier() {
     });
   }, [products, selectedCategory, searchQuery]);
 
-  // Hitung Total
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const total = subtotal + Math.round(subtotal * 0.1);
+  const subtotal = Math.round(
+    cartItems.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0) * 100,
+  ) / 100;
+  const tax = Math.round(subtotal * taxRate * 100) / 100;
+  const total = Math.round((subtotal + tax) * 100) / 100;
 
-  // --- FUNGSI KERANJANG ---
   const handleOpenCustomize = (product) => {
     setSelectedProduct(product);
     setIsCustomizeModalOpen(true);
@@ -85,124 +170,140 @@ export default function Cashier() {
   };
 
   const handleAddToCartFromModal = (customizedProduct) => {
+    const cartKey = buildCartKey(customizedProduct.id, customizedProduct.notes);
+    setOrderFeedback('');
+
     setCartItems((prevItems) => {
-      const existingIndex = prevItems.findIndex(
-        (item) => item.id === customizedProduct.id && item.notes === customizedProduct.notes
-      );
+      const existingIndex = prevItems.findIndex((item) => item.cartKey === cartKey);
       if (existingIndex > -1) {
         const updated = [...prevItems];
-        updated[existingIndex] = { ...updated[existingIndex], quantity: updated[existingIndex].quantity + 1 };
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          quantity: updated[existingIndex].quantity + 1,
+        };
         return updated;
       }
-      return [...prevItems, { ...customizedProduct, quantity: 1 }];
+      return [...prevItems, { ...customizedProduct, cartKey, quantity: 1 }];
     });
   };
 
-  const handleUpdateQuantity = (productId, newQuantity) => {
+  const handleUpdateQuantity = (cartKey, newQuantity) => {
     if (newQuantity <= 0) {
-      setCartItems((prev) => prev.filter((item) => item.id !== productId));
+      setCartItems((prev) => prev.filter((item) => item.cartKey !== cartKey));
     } else {
-      setCartItems((prev) => prev.map((item) => item.id === productId ? { ...item, quantity: newQuantity } : item));
+      setCartItems((prev) =>
+        prev.map((item) => (item.cartKey === cartKey ? { ...item, quantity: newQuantity } : item)),
+      );
     }
   };
 
   const handleResetCart = () => setCartItems([]);
 
-  // --- FUNGSI CHECKOUT & MEJA ---
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
+    setOrderError('');
+
     if (orderType === 'Takeaway') {
-      setIsPaymentModalOpen(true); // Langsung bayar jika takeaway
+      setIsPaymentModalOpen(true);
     } else {
-      setIsTableModalOpen(true); // Pilih meja jika Dine-In
+      setIsTableModalOpen(true);
     }
   };
 
-  // Dipanggil saat meja dipilih dari denah
   const handleConfirmTable = (tableName, type = 'Dine-In', maxSeats = 0) => {
     setIsTableModalOpen(false);
-    
+
     if (type === 'Takeaway') {
       setSelectedTable('Tanpa Meja');
       setOrderType('Takeaway');
+      setSeatCount(1);
       setIsPaymentModalOpen(true);
     } else {
-      // Buka modal input jumlah kursi
       setPendingTable({ name: tableName, maxSeats });
       setIsSeatModalOpen(true);
     }
   };
 
-  // Dipanggil saat kasir memasukkan jumlah kursi
-  const handleSeatConfirm = (seatCount) => {
-    if (seatCount > pendingTable.maxSeats) {
-      alert(`Maaf, Meja ${pendingTable.name} hanya muat maksimal ${pendingTable.maxSeats} orang.`);
+  const handleSeatConfirm = (selectedSeats) => {
+    if (pendingTable?.maxSeats && selectedSeats > pendingTable.maxSeats) {
+      alert(`Maaf, ${pendingTable.name} hanya muat maksimal ${pendingTable.maxSeats} orang.`);
       return;
     }
-    
+
     setSelectedTable(pendingTable.name);
     setOrderType('Dine-In');
+    setSeatCount(selectedSeats);
     setIsSeatModalOpen(false);
     setIsPaymentModalOpen(true);
-
-    // Simpan jumlah kursi sementara di localStorage untuk dikirim ke KDS
-    localStorage.setItem('mokapro_temp_seats', seatCount);
   };
 
-  // --- FUNGSI PEMBAYARAN SUKSES ---
-  const handlePaymentConfirm = ({ method, cashReceived, change }) => {
-    setIsPaymentModalOpen(false);
-    
-    // 1. Buat ID Transaksi
-    const trxId = `TRX-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
-    const seatCount = localStorage.getItem('mokapro_temp_seats') || 1;
+  const handlePaymentConfirm = async ({ method }) => {
+    setSubmittingOrder(true);
+    setOrderError('');
 
-    // 2. Susun data pesanan
-    const newOrder = {
-      id: trxId,
-      date: new Date().toLocaleString('id-ID'),
-      type: orderType,
-      table: selectedTable,
-      seats: seatCount,
-      items: cartItems,
-      subtotal: subtotal,
-      tax: Math.round(subtotal * 0.1),
-      total: total,
-      method: method === 'qris' ? 'QRIS' : 'Tunai',
-      status: 'Selesai'
-    };
+    try {
+      const response = await apiFetch('/api/orders', {
+        method: 'POST',
+        body: JSON.stringify({
+          type: orderType,
+          table_number: orderType === 'Dine-In' && selectedTable !== 'Tanpa Meja' ? selectedTable : null,
+          seats: orderType === 'Dine-In' ? seatCount : null,
+          payment_method: method,
+          items: cartItems.map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+            notes: item.notes || null,
+            ...(Array.isArray(item.modifierIds) && item.modifierIds.length > 0
+              ? { modifier_ids: item.modifierIds }
+              : {}),
+          })),
+        }),
+      });
 
-    // 3. Simpan ke Riwayat (History)
-    const existingHistory = JSON.parse(localStorage.getItem('mokapro_history')) || [];
-    localStorage.setItem('mokapro_history', JSON.stringify([newOrder, ...existingHistory]));
+      const payload = await response.json();
+      const orderNumber = payload?.data?.order_number || '-';
 
-    // 4. Simpan ke Antrean Dapur (KDS)
-    const existingKDS = JSON.parse(localStorage.getItem('mokapro_kds')) || [];
-    const kdsOrder = { 
-      ...newOrder, 
-      status: 'Menunggu', 
-      time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) 
-    };
-    localStorage.setItem('mokapro_kds', JSON.stringify([kdsOrder, ...existingKDS]));
-
-    // 5. Notifikasi & Reset
-    alert(`Pembayaran Berhasil!\nID: ${trxId}\nPesanan dikirim ke Dapur.`);
-    setCartItems([]);
-    setSelectedTable('Tanpa Meja');
-    setOrderType('Dine-In');
-    localStorage.removeItem('mokapro_temp_seats');
+      setIsPaymentModalOpen(false);
+      setCartItems([]);
+      setSelectedTable('Tanpa Meja');
+      setOrderType('Dine-In');
+      setSeatCount(1);
+      setOrderFeedback(`Pembayaran berhasil (${orderNumber}). Pesanan telah dikirim ke Dapur.`);
+    } catch (requestError) {
+      setOrderError(requestError.message || 'Gagal memproses pembayaran. Silakan coba lagi.');
+    } finally {
+      setSubmittingOrder(false);
+    }
   };
 
-  const handleHoldOrder = () => alert('Pesanan telah ditahan');
+  const handleHoldOrder = () => {
+    setOrderFeedback('Fitur tahan pesanan sementara tersedia pada sesi aktif.');
+  };
 
-  // --- TAMPILAN UI ---
   return (
     <div className="cashier-page">
-      <DashboardNavbar role="cashier" storeName="Cabang Utama Toko" userName="Kasir 01" userRoleLabel="Kasir" />
+      <DashboardNavbar storeName="Cabang Utama Toko" />
 
       <main className="cashier-main">
         <div className="cashier-container">
           <section className="cashier-products-section">
+            {orderFeedback && (
+              <div
+                role="status"
+                style={{
+                  marginBottom: '12px',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  backgroundColor: '#eef8f0',
+                  color: '#1f6e3d',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                }}
+              >
+                {orderFeedback}
+              </div>
+            )}
+
             <div className="cashier-toolbar">
               <div className="cashier-search-wrap">
                 <input
@@ -233,7 +334,7 @@ export default function Cashier() {
             </div>
 
             <div className="cashier-categories-bar" role="tablist">
-              {CATEGORIES.map((cat) => (
+              {categories.map((cat) => (
                 <button
                   key={cat}
                   type="button"
@@ -246,7 +347,20 @@ export default function Cashier() {
             </div>
 
             <div className="cashier-grid-wrap">
-              <ProductGrid products={filteredProducts} onAddToCart={handleOpenCustomize} />
+              {loadingCatalog ? (
+                <p role="status" style={{ padding: '24px', textAlign: 'center', color: '#7a6d64' }}>
+                  Memuat katalog menu...
+                </p>
+              ) : catalogError ? (
+                <div role="alert" style={{ padding: '24px', textAlign: 'center', color: '#b91c1c' }}>
+                  <p>{catalogError}</p>
+                  <button type="button" className="cashier-option-btn" onClick={loadCatalog} style={{ marginTop: '8px' }}>
+                    Muat Ulang
+                  </button>
+                </div>
+              ) : (
+                <ProductGrid products={filteredProducts} onAddToCart={handleOpenCustomize} />
+              )}
             </div>
           </section>
 
@@ -255,6 +369,7 @@ export default function Cashier() {
               cartItems={cartItems}
               orderType={orderType}
               tableLocation={cartItems.length > 0 ? selectedTable : 'Tanpa Meja'}
+              taxRate={taxRate}
               onUpdateQuantity={handleUpdateQuantity}
               onResetCart={handleResetCart}
               onHoldOrder={handleHoldOrder}
@@ -264,7 +379,6 @@ export default function Cashier() {
         </div>
       </main>
 
-      {/* Modal Kustomisasi Produk */}
       {isCustomizeModalOpen && selectedProduct && (
         <CustomizeProductModal
           key={selectedProduct.id}
@@ -275,7 +389,6 @@ export default function Cashier() {
         />
       )}
 
-      {/* Modal Denah Meja */}
       {isTableModalOpen && (
         <TableSelectionModal
           key={selectedTable}
@@ -286,7 +399,6 @@ export default function Cashier() {
         />
       )}
 
-      {/* Modal Input Jumlah Kursi (BARU) */}
       {isSeatModalOpen && pendingTable && (
         <SeatSelectionModal
           isOpen={isSeatModalOpen}
@@ -296,19 +408,25 @@ export default function Cashier() {
         />
       )}
 
-      {/* Modal Pembayaran */}
       {isPaymentModalOpen && (
         <PaymentModal
           isOpen={isPaymentModalOpen}
           total={total}
-          onClose={() => setIsPaymentModalOpen(false)}
+          submitting={submittingOrder}
+          error={orderError}
+          onClose={() => {
+            if (!submittingOrder) {
+              setIsPaymentModalOpen(false);
+              setOrderError('');
+            }
+          }}
           onPaymentConfirm={handlePaymentConfirm}
         />
       )}
 
       <footer className="cashier-footer">
         <div className="cashier-footer-container">
-          <p className="cashier-footer-copy">© 2026 Moka Pro POS & Roastery OS.</p>
+          <p className="cashier-footer-copy">© 2026 Moka Pro POS &amp; Roastery OS.</p>
           <div className="cashier-footer-status">
             <div className="status-indicator"><span className="status-dot"></span><span className="status-text">Cloud Tersinkronisasi</span></div>
             <span className="status-separator">•</span>

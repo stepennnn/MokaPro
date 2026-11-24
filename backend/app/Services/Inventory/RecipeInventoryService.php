@@ -82,9 +82,9 @@ class RecipeInventoryService
         }, 3);
     }
 
-    public function reserveForOrder(Order $order): void
+    public function reserveForOrder(Order $order, bool $allowProductsWithoutRecipe = false): void
     {
-        DB::transaction(function () use ($order): void {
+        DB::transaction(function () use ($order, $allowProductsWithoutRecipe): void {
             $order = Order::query()
                 ->lockForUpdate()
                 ->findOrFail($order->id)
@@ -99,7 +99,15 @@ class RecipeInventoryService
                 $product = $item->product;
                 $recipe = $product?->activeRecipe;
 
-                if (! $product?->active || $recipe === null || $recipe->recipeIngredients->isEmpty()) {
+                if (! $product?->active) {
+                    throw new LogicException("Product on order {$order->id} is inactive.");
+                }
+
+                if ($recipe === null || $recipe->recipeIngredients->isEmpty()) {
+                    if ($allowProductsWithoutRecipe) {
+                        continue;
+                    }
+
                     throw new LogicException("Product on order {$order->id} has no active recipe.");
                 }
 
@@ -117,6 +125,10 @@ class RecipeInventoryService
                         $ingredientId,
                     );
                 }
+            }
+
+            if ($required === []) {
+                return;
             }
 
             ksort($required);

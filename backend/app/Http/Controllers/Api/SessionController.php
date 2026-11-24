@@ -103,6 +103,13 @@ class SessionController extends Controller
         ]);
     }
 
+    public function config(): JsonResponse
+    {
+        return response()->json([
+            'tax_rate' => (string) config('mokapro.tax_rate', '0.1000'),
+        ]);
+    }
+
     public function destroy(Request $request): JsonResponse
     {
         Auth::guard('web')->logout();

@@ -7,18 +7,22 @@ use App\Http\Requests\Api\SaveProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        $includeInactive = $request->boolean('include_inactive')
+            && $request->session()->get('active_role') === 'admin';
+
         $products = Product::query()
             ->with([
                 'category:id,name',
                 'activeRecipe:id,version',
                 'modifiers:id,code,name,type,value',
             ])
-            ->where('active', true)
+            ->when(! $includeInactive, fn ($query) => $query->where('active', true))
             ->orderBy('name')
             ->get()
             ->map(fn (Product $product): array => $this->catalogData($product));

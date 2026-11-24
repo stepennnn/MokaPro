@@ -11,7 +11,14 @@ import './PaymentModal.css';
  * @param {Function} props.onClose
  * @param {Function} props.onPaymentConfirm - Callback saat pembayaran dikonfirmasi ({ method, cashReceived, change })
  */
-export default function PaymentModal({ isOpen, total = 0, onClose, onPaymentConfirm }) {
+export default function PaymentModal({
+  isOpen,
+  total = 0,
+  submitting = false,
+  error = '',
+  onClose,
+  onPaymentConfirm
+}) {
   const [activeTab, setActiveTab] = useState('qris'); // 'qris' | 'cash'
   const [cashReceived, setCashReceived] = useState('');
 
@@ -248,14 +255,30 @@ export default function PaymentModal({ isOpen, total = 0, onClose, onPaymentConf
           )}
         </div>
 
+        {error && (
+          <p
+            role="alert"
+            style={{
+              margin: '0 0 12px',
+              padding: '10px 12px',
+              borderRadius: '8px',
+              backgroundColor: '#fef2f2',
+              color: '#b91c1c',
+              fontSize: '13px',
+            }}
+          >
+            {error}
+          </p>
+        )}
+
         {/* Confirm Button */}
         <button
           type="button"
-          className={`payment-confirm-btn ${activeTab === 'cash' && !isCashValid ? 'disabled' : ''}`}
-          disabled={activeTab === 'cash' && !isCashValid}
+          className={`payment-confirm-btn ${(activeTab === 'cash' && !isCashValid) || submitting ? 'disabled' : ''}`}
+          disabled={(activeTab === 'cash' && !isCashValid) || submitting}
           onClick={handleConfirm}
         >
-          <span>Konfirmasi Pembayaran</span>
+          <span>{submitting ? 'Memproses Pembayaran...' : 'Konfirmasi Pembayaran'}</span>
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
             stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="5" y1="12" x2="19" y2="12" />
