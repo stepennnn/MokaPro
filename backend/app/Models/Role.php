@@ -12,6 +12,8 @@ class Role extends Model
 {
     use HasFactory;
 
+    public const CODES = ['cashier', 'barista', 'admin'];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withTimestamps();

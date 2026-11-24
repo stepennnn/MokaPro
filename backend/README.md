@@ -39,6 +39,18 @@ try {
 
 Never run `migrate:fresh` against `mokapro_dev`, an existing application database, or production. `MOKAPRO_TAX_RATE` defaults to `0.1000` (10%); `APP_TIMEZONE` defaults to `Asia/Jakarta`. Both values are read through Laravel config.
 
+### Employee PIN sessions
+
+Provision employees interactively; the PIN prompt is hidden and the command stores only a PIN hash plus a random password hash:
+
+```powershell
+php artisan mokapro:employee
+```
+
+Do not seed a shared/default PIN. The session API is `GET /api/login-options?role=cashier`, `POST /api/login`, `GET /api/session`, and `POST /api/logout`. Login requires an active employee's assigned role and a 6–12 digit PIN. Five failed credential attempts lock the employee for 15 minutes, independent of client IP; login and login-option routes are also limited to 30 requests per minute per IP.
+
+The API uses Laravel's stateful session middleware and CSRF protection; browser clients must use the session cookie and CSRF cookie rather than storing a bearer token. In production, serve the SPA and API from the same origin, use HTTPS, set `SESSION_SECURE_COOKIE=true`, and configure a shared persistent `CACHE_STORE` for rate limits.
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
