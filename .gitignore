@@ -28,3 +28,7 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 *.local
+
+# Documentation & supporting files
+/docs/
+/dokumen pendukung/
