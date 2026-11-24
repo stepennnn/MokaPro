@@ -119,6 +119,13 @@ class SessionController extends Controller
         return response()->json([], 204);
     }
 
+    public static function clearLoginLockout(int $employeeId): void
+    {
+        $hash = hash('sha256', (string) $employeeId);
+        RateLimiter::clear('pin-login:failures:'.$hash);
+        RateLimiter::clear('pin-login:lockout:'.$hash);
+    }
+
     private function failureKey(int $employeeId): string
     {
         return 'pin-login:failures:'.hash('sha256', (string) $employeeId);

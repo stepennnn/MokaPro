@@ -29,6 +29,7 @@ class SaveProductRequest extends FormRequest
             ],
             'price' => [...$required, 'string', 'regex:/\A\d+(?:\.\d{1,2})?\z/'],
             'active' => ['sometimes', 'boolean'],
+            'image' => ['sometimes', 'nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 }

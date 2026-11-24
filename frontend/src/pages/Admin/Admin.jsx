@@ -134,6 +134,11 @@ export default function Admin() {
             <h3>Menu &amp; Resep</h3>
             <span>Buka modul →</span>
           </Link>
+          <Link to="/admin/employees" className="module-card">
+            <div className="icon">👥</div>
+            <h3>Karyawan &amp; PIN</h3>
+            <span>Buka modul →</span>
+          </Link>
         </div>
       </main>
     </div>

@@ -230,6 +230,28 @@
   cursor: pointer;
 }
 
+.menu-product-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ede5dc;
+  flex-shrink: 0;
+}
+
+.menu-product-thumb-placeholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background-color: #f3ece4;
+  border: 1px solid #ede5dc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .menu-main {

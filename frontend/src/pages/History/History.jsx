@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import DashboardNavbar from '../../components/DashboardNavbar/DashboardNavbar';
+import ReceiptModal from '../../components/ReceiptModal/ReceiptModal';
 import { apiFetch } from '../../lib/api';
 import './History.css';
 
@@ -19,6 +20,7 @@ export default function History() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const fetchOrderHistory = useCallback(async () => {
     const response = await apiFetch('/api/orders');
@@ -119,6 +121,7 @@ export default function History() {
                   <th>Metode</th>
                   <th>Status</th>
                   <th>Total</th>
+                  <th>Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -130,6 +133,25 @@ export default function History() {
                     <td>{formatPaymentMethod(trx.payment_method)}</td>
                     <td>{trx.status}</td>
                     <td>Rp {Number(trx.total || 0).toLocaleString('id-ID')}</td>
+                    <td>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedOrder(trx)}
+                        style={{
+                          backgroundColor: '#3b2519',
+                          color: '#ffffff',
+                          border: 'none',
+                          borderRadius: '6px',
+                          padding: '6px 10px',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        Lihat / Cetak Struk
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -137,6 +159,12 @@ export default function History() {
           )}
         </div>
       </main>
+
+      <ReceiptModal
+        isOpen={Boolean(selectedOrder)}
+        order={selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+      />
     </div>
   );
 }

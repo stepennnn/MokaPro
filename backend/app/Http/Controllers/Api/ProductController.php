@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -33,9 +34,16 @@ class ProductController extends Controller
     public function store(SaveProductRequest $request): JsonResponse
     {
         $data = $request->validated();
+        unset($data['image']);
+
         $category = Category::query()
             ->where('active', true)
             ->findOrFail($data['category_id']);
+
+        $imagePath = $request->hasFile('image')
+            ? $request->file('image')->store('products', 'public')
+            : null;
+
         $product = Product::query()->create([
             'code' => $data['code'],
             'name' => $data['name'],
@@ -43,6 +51,7 @@ class ProductController extends Controller
             'category' => $category->name,
             'price' => $data['price'],
             'active' => $data['active'] ?? true,
+            'image_path' => $imagePath,
         ]);
         $product->load([
             'category:id,name',
@@ -56,12 +65,23 @@ class ProductController extends Controller
     public function update(SaveProductRequest $request, Product $product): JsonResponse
     {
         $data = $request->validated();
+        unset($data['image']);
 
         if (array_key_exists('category_id', $data)) {
             $category = Category::query()
                 ->where('active', true)
                 ->findOrFail($data['category_id']);
             $data['category'] = $category->name;
+        }
+
+        if ($request->hasFile('image')) {
+            $newImagePath = $request->file('image')->store('products', 'public');
+            $oldImagePath = $product->image_path;
+            $data['image_path'] = $newImagePath;
+
+            if ($oldImagePath && $oldImagePath !== $newImagePath) {
+                Storage::disk('public')->delete($oldImagePath);
+            }
         }
 
         $product->fill($data)->save();
@@ -75,7 +95,7 @@ class ProductController extends Controller
     }
 
     /**
-     * @return array{id: int, code: string, name: string, category: array{id: int, name: string}, price: string, active: bool, active_recipe: array{id: int, version: int}|null, modifiers: array<int, array{id: int, code: string, name: string, type: string, value: string}>}
+     * @return array{id: int, code: string, name: string, category: array{id: int, name: string}, price: string, active: bool, image_url: string|null, active_recipe: array{id: int, version: int}|null, modifiers: array<int, array{id: int, code: string, name: string, type: string, value: string}>}
      */
     private function catalogData(Product $product): array
     {
@@ -92,6 +112,7 @@ class ProductController extends Controller
             ],
             'price' => $product->price,
             'active' => $product->active,
+            'image_url' => $product->image_path ? '/storage/'.ltrim($product->image_path, '/') : null,
             'active_recipe' => $activeRecipe === null ? null : [
                 'id' => $activeRecipe->id,
                 'version' => $activeRecipe->version,

@@ -35,6 +35,7 @@ class ProductCatalogTest extends TestCase
                 'category' => ['id' => $category['id'], 'name' => 'Coffee'],
                 'price' => '4.50',
                 'active' => true,
+                'image_url' => null,
                 'active_recipe' => null,
                 'modifiers' => [],
             ]],

@@ -43,6 +43,14 @@ function resolveUrl(path) {
   return API_BASE_URL ? `${API_BASE_URL}${path}` : path;
 }
 
+export function resolveAssetUrl(path) {
+  if (!path) {
+    return null;
+  }
+
+  return resolveUrl(path);
+}
+
 function getCredentialsMode(url) {
   if (!API_BASE_URL) {
     return 'same-origin';

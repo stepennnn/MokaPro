@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import DashboardNavbar from '../../components/DashboardNavbar/DashboardNavbar';
-import { apiFetch } from '../../lib/api';
+import { apiFetch, resolveAssetUrl } from '../../lib/api';
 import './Menu.css';
 
 function toDecimalString(value, decimals = 2) {
@@ -36,6 +36,8 @@ export default function Menu() {
     category_id: '',
     price: '',
     active: true,
+    imageFile: null,
+    imagePreview: null,
   });
   const [savingEdit, setSavingEdit] = useState(false);
 
@@ -46,6 +48,8 @@ export default function Menu() {
     category_id: '',
     price: '',
     active: true,
+    imageFile: null,
+    imagePreview: null,
   });
   const [creating, setCreating] = useState(false);
 
@@ -141,6 +145,23 @@ export default function Menu() {
   }, [fetchMenuData]);
 
   // --- PRODUCT HANDLERS ---
+  const handleSelectImageFile = (file, setter) => {
+    if (!file) {
+      setter((prev) => ({ ...prev, imageFile: null, imagePreview: null }));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setter((prev) => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: typeof reader.result === 'string' ? reader.result : null,
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleEditClick = (product) => {
     setFeedback('');
     setError('');
@@ -151,6 +172,8 @@ export default function Menu() {
       category_id: product.category?.id ? String(product.category.id) : '',
       price: String(Number(product.price || 0)),
       active: Boolean(product.active),
+      imageFile: null,
+      imagePreview: product.image_url ? resolveAssetUrl(product.image_url) : null,
     });
   };
 
@@ -166,16 +189,33 @@ export default function Menu() {
     setFeedback('');
 
     try {
-      const response = await apiFetch(`/api/admin/products/${editingId}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          code: editForm.code.trim(),
-          name: editForm.name.trim(),
-          category_id: Number(editForm.category_id),
-          price: decimalPrice,
-          active: Boolean(editForm.active),
-        }),
-      });
+      let response;
+      if (editForm.imageFile) {
+        const formData = new FormData();
+        formData.append('_method', 'PATCH');
+        formData.append('code', editForm.code.trim());
+        formData.append('name', editForm.name.trim());
+        formData.append('category_id', String(Number(editForm.category_id)));
+        formData.append('price', decimalPrice);
+        formData.append('active', editForm.active ? '1' : '0');
+        formData.append('image', editForm.imageFile);
+
+        response = await apiFetch(`/api/admin/products/${editingId}`, {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        response = await apiFetch(`/api/admin/products/${editingId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            code: editForm.code.trim(),
+            name: editForm.name.trim(),
+            category_id: Number(editForm.category_id),
+            price: decimalPrice,
+            active: Boolean(editForm.active),
+          }),
+        });
+      }
 
       const payload = await response.json();
       const updated = payload.data;
@@ -204,16 +244,32 @@ export default function Menu() {
     setFeedback('');
 
     try {
-      const response = await apiFetch('/api/admin/products', {
-        method: 'POST',
-        body: JSON.stringify({
-          code: createForm.code.trim(),
-          name: createForm.name.trim(),
-          category_id: Number(createForm.category_id),
-          price: decimalPrice,
-          active: Boolean(createForm.active),
-        }),
-      });
+      let response;
+      if (createForm.imageFile) {
+        const formData = new FormData();
+        formData.append('code', createForm.code.trim());
+        formData.append('name', createForm.name.trim());
+        formData.append('category_id', String(Number(createForm.category_id)));
+        formData.append('price', decimalPrice);
+        formData.append('active', createForm.active ? '1' : '0');
+        formData.append('image', createForm.imageFile);
+
+        response = await apiFetch('/api/admin/products', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        response = await apiFetch('/api/admin/products', {
+          method: 'POST',
+          body: JSON.stringify({
+            code: createForm.code.trim(),
+            name: createForm.name.trim(),
+            category_id: Number(createForm.category_id),
+            price: decimalPrice,
+            active: Boolean(createForm.active),
+          }),
+        });
+      }
 
       const payload = await response.json();
       const created = payload.data;
@@ -225,6 +281,8 @@ export default function Menu() {
         category_id: categories[0] ? String(categories[0].id) : '',
         price: '',
         active: true,
+        imageFile: null,
+        imagePreview: null,
       });
       setShowCreateForm(false);
       setFeedback('Produk baru berhasil ditambahkan!');
@@ -634,6 +692,25 @@ export default function Menu() {
                     </select>
                   </div>
                   <div>
+                    <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px' }}>Foto Produk (JPG/PNG/WebP)</label>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="edit-input"
+                      onChange={(e) => handleSelectImageFile(e.target.files?.[0] || null, setCreateForm)}
+                    />
+                  </div>
+                  {createForm.imagePreview && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <img
+                        src={createForm.imagePreview}
+                        alt="Pratinjau produk baru"
+                        className="menu-product-thumb"
+                      />
+                      <span style={{ fontSize: '12px', color: '#7a6d64' }}>Pratinjau</span>
+                    </div>
+                  )}
+                  <div>
                     <button type="submit" className="btn-save" disabled={creating}>
                       {creating ? 'Menyimpan...' : 'Simpan Produk'}
                     </button>
@@ -669,7 +746,24 @@ export default function Menu() {
                         {editingId === product.id ? (
                           <>
                             <td>
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  {editForm.imagePreview ? (
+                                    <img
+                                      src={editForm.imagePreview}
+                                      alt="Pratinjau edit produk"
+                                      className="menu-product-thumb"
+                                    />
+                                  ) : (
+                                    <div className="menu-product-thumb-placeholder">☕</div>
+                                  )}
+                                  <input
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    className="edit-input"
+                                    onChange={(e) => handleSelectImageFile(e.target.files?.[0] || null, setEditForm)}
+                                  />
+                                </div>
                                 <input
                                   type="text"
                                   value={editForm.code}
@@ -730,8 +824,21 @@ export default function Menu() {
                         ) : (
                           <>
                             <td>
-                              <strong>{product.name}</strong>
-                              <div style={{ fontSize: '11px', color: '#7a6d64' }}><code>{product.code}</code></div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                {product.image_url ? (
+                                  <img
+                                    src={resolveAssetUrl(product.image_url)}
+                                    alt={product.name}
+                                    className="menu-product-thumb"
+                                  />
+                                ) : (
+                                  <div className="menu-product-thumb-placeholder" aria-hidden="true">☕</div>
+                                )}
+                                <div>
+                                  <strong>{product.name}</strong>
+                                  <div style={{ fontSize: '11px', color: '#7a6d64' }}><code>{product.code}</code></div>
+                                </div>
+                              </div>
                             </td>
                             <td>{product.category?.name || '-'}</td>
                             <td>Rp {Number(product.price || 0).toLocaleString('id-ID')}</td>

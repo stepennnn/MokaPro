@@ -37,6 +37,7 @@ export default function DashboardNavbar({
       { label: 'Dashboard', path: '/admin' },
       { label: 'Inventaris', path: '/admin/inventory' },
       { label: 'Menu', path: '/admin/menu' },
+      { label: 'Karyawan', path: '/admin/employees' },
       { label: 'Laporan', path: '/admin/reports' },
       { label: 'Riwayat', path: '/history' }
     ];

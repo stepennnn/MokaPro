@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\OrderController;
@@ -55,6 +56,10 @@ Route::middleware(['auth:web', 'role:admin'])->prefix('admin')->group(function (
     Route::get('/inventory', [InventoryController::class, 'index']);
     Route::post('/restocks', [InventoryController::class, 'storeRestock']);
     Route::get('/reports', [ReportController::class, 'index']);
+    Route::get('/users', [AdminUserController::class, 'index']);
+    Route::post('/users', [AdminUserController::class, 'store']);
+    Route::patch('/users/{user}', [AdminUserController::class, 'update']);
+    Route::patch('/users/{user}/pin', [AdminUserController::class, 'resetPin']);
 });
 
 // Autentikasi PIN & Sesi

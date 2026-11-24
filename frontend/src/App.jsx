@@ -17,6 +17,7 @@ import Shift from './pages/Shift/Shift';
 import Inventory from './pages/Admin/Inventory';
 import Menu from './pages/Admin/Menu';
 import Reports from './pages/Admin/Reports';
+import Employees from './pages/Admin/Employees';
 
 const roleHome = {
   cashier: '/cashier',
@@ -99,6 +100,11 @@ export default function App() {
         <Route path="/admin/reports" element={(
           <ProtectedRoute allowedRoles={['admin']}>
             <Reports />
+          </ProtectedRoute>
+        )} />
+        <Route path="/admin/employees" element={(
+          <ProtectedRoute allowedRoles={['admin']}>
+            <Employees />
           </ProtectedRoute>
         )} />
       </Routes>

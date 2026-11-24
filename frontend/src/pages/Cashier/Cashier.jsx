@@ -6,7 +6,9 @@ import CustomizeProductModal from '../../components/CustomizeProductModal/Custom
 import TableSelectionModal from '../../components/TableSelectionModal/TableSelectionModal';
 import SeatSelectionModal from '../../components/SeatSelectionModal/SeatSelectionModal';
 import PaymentModal from '../../components/PaymentModal/PaymentModal';
-import { apiFetch } from '../../lib/api';
+import ReceiptModal from '../../components/ReceiptModal/ReceiptModal';
+import { useAuth } from '../../auth/useAuth';
+import { apiFetch, resolveAssetUrl } from '../../lib/api';
 import espressoImg from '../../assets/product-espresso.png';
 import latteImg from '../../assets/product-latte.png';
 import kopiSusuImg from '../../assets/product-kopisusu.png';
@@ -39,7 +41,8 @@ function normalizeProduct(raw) {
     price: Number(raw.price) || 0,
     active: Boolean(raw.active),
     modifiers: Array.isArray(raw.modifiers) ? raw.modifiers : [],
-    image: resolveProductImage(raw.name),
+    image_url: raw.image_url ? resolveAssetUrl(raw.image_url) : null,
+    image: raw.image_url ? resolveAssetUrl(raw.image_url) : resolveProductImage(raw.name),
   };
 }
 
@@ -48,6 +51,7 @@ function buildCartKey(productId, notes = '') {
 }
 
 export default function Cashier() {
+  const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(['Semua']);
   const [taxRate, setTaxRate] = useState(0.1);
@@ -68,6 +72,7 @@ export default function Cashier() {
   const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
   const [pendingTable, setPendingTable] = useState(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [receiptData, setReceiptData] = useState(null);
 
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [orderError, setOrderError] = useState('');
@@ -237,7 +242,7 @@ export default function Cashier() {
     setIsPaymentModalOpen(true);
   };
 
-  const handlePaymentConfirm = async ({ method }) => {
+  const handlePaymentConfirm = async ({ method, cashReceived, change }) => {
     setSubmittingOrder(true);
     setOrderError('');
 
@@ -261,7 +266,8 @@ export default function Cashier() {
       });
 
       const payload = await response.json();
-      const orderNumber = payload?.data?.order_number || '-';
+      const createdOrder = payload?.data || null;
+      const orderNumber = createdOrder?.order_number || '-';
 
       setIsPaymentModalOpen(false);
       setCartItems([]);
@@ -269,6 +275,15 @@ export default function Cashier() {
       setOrderType('Dine-In');
       setSeatCount(1);
       setOrderFeedback(`Pembayaran berhasil (${orderNumber}). Pesanan telah dikirim ke Dapur.`);
+
+      if (createdOrder) {
+        setReceiptData({
+          order: createdOrder,
+          cashReceived: method === 'cash' ? cashReceived : null,
+          change: method === 'cash' ? change : null,
+          taxRate,
+        });
+      }
     } catch (requestError) {
       setOrderError(requestError.message || 'Gagal memproses pembayaran. Silakan coba lagi.');
     } finally {
@@ -421,6 +436,18 @@ export default function Cashier() {
             }
           }}
           onPaymentConfirm={handlePaymentConfirm}
+        />
+      )}
+
+      {receiptData && (
+        <ReceiptModal
+          isOpen={Boolean(receiptData)}
+          order={receiptData.order}
+          cashReceived={receiptData.cashReceived}
+          change={receiptData.change}
+          taxRate={receiptData.taxRate}
+          fallbackCashierName={user?.name || ''}
+          onClose={() => setReceiptData(null)}
         />
       )}
 
