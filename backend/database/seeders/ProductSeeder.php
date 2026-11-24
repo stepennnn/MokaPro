@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
@@ -19,7 +21,17 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::create($product);
+            $category = Category::firstOrCreate(['name' => $product['category']]);
+            $code = 'SEED-'.Str::upper(Str::slug($product['name'], '-'));
+
+            Product::firstOrCreate(
+                ['code' => $code],
+                $product + [
+                    'code' => $code,
+                    'category_id' => $category->id,
+                    'active' => true,
+                ],
+            );
         }
     }
 }

@@ -3,13 +3,78 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\SaveProductRequest;
+use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
-        // Mengambil semua data produk dari database
-        return response()->json(Product::all());
+        $products = Product::query()
+            ->with('category:id,name')
+            ->where('active', true)
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Product $product): array => $this->catalogData($product));
+
+        return response()->json(['data' => $products]);
+    }
+
+    public function store(SaveProductRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        $category = Category::query()
+            ->where('active', true)
+            ->findOrFail($data['category_id']);
+        $product = Product::query()->create([
+            'code' => $data['code'],
+            'name' => $data['name'],
+            'category_id' => $category->id,
+            'category' => $category->name,
+            'price' => $data['price'],
+            'active' => $data['active'] ?? true,
+        ]);
+        $product->load('category:id,name');
+
+        return response()->json(['data' => $this->catalogData($product)], 201);
+    }
+
+    public function update(SaveProductRequest $request, Product $product): JsonResponse
+    {
+        $data = $request->validated();
+
+        if (array_key_exists('category_id', $data)) {
+            $category = Category::query()
+                ->where('active', true)
+                ->findOrFail($data['category_id']);
+            $data['category'] = $category->name;
+        }
+
+        $product->fill($data)->save();
+        $product->load('category:id,name');
+
+        return response()->json(['data' => $this->catalogData($product)]);
+    }
+
+    /**
+     * @return array{id: int, code: string, name: string, category: array{id: int, name: string}, price: string, active: bool}
+     */
+    private function catalogData(Product $product): array
+    {
+        $category = $product->getRelation('category');
+
+        return [
+            'id' => $product->id,
+            'code' => $product->code,
+            'name' => $product->name,
+            'category' => [
+                'id' => $category->id,
+                'name' => $category->name,
+            ],
+            'price' => $product->price,
+            'active' => $product->active,
+        ];
     }
 }
