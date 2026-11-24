@@ -57,6 +57,8 @@ Authenticated cashiers and admins can read `GET /api/products` and `GET /api/cat
 
 Admins manage ingredients through `GET|POST /api/admin/ingredients` and `PATCH /api/admin/ingredients/{ingredient}`, and modifiers through `POST /api/admin/modifiers` and `PATCH /api/admin/modifiers/{modifier}`. Assign active modifier options with `PUT /api/admin/products/{product}/modifiers`; create a new recipe version with `POST /api/admin/products/{product}/recipes` and decimal-string ingredient quantities (maximum three fractional digits). Modifier values do not change product prices. Ingredient base units become immutable after a recipe references them.
 
+Admins can review balances at `GET /api/admin/inventory` and record stock receipts at `POST /api/admin/restocks` using a unique reference and decimal-string quantities. New ingredients start at `0.000`; no sample opening stock is seeded. Reservations hold stock for ten minutes without reducing actual quantity, and stock is consumed only through the payment service.
+
 For local frontend development, run Vite on port 5173 and Laravel on port 8000. Vite proxies `/api` and `/sanctum` to `http://127.0.0.1:8000`; set `MOKAPRO_BACKEND_URL` in the frontend environment if Laravel uses another URL. The Vite origin is included in Sanctum's default stateful domains.
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>

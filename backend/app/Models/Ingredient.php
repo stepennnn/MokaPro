@@ -13,6 +13,7 @@ class Ingredient extends Model
     {
         return [
             'minimum_stock' => 'decimal:3',
+            'actual_quantity' => 'decimal:3',
             'active' => 'boolean',
         ];
     }
@@ -20,5 +21,20 @@ class Ingredient extends Model
     public function recipeIngredients(): HasMany
     {
         return $this->hasMany(RecipeIngredient::class);
+    }
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(StockReservation::class);
+    }
+
+    public function movements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function restockItems(): HasMany
+    {
+        return $this->hasMany(RestockItem::class);
     }
 }

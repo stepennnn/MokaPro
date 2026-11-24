@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RecipeController;
@@ -25,6 +26,8 @@ Route::middleware(['auth:web', 'role:admin'])->prefix('admin')->group(function (
     Route::patch('/modifiers/{modifier}', [RecipeController::class, 'updateModifier']);
     Route::put('/products/{product}/modifiers', [RecipeController::class, 'syncProductModifiers']);
     Route::post('/products/{product}/recipes', [RecipeController::class, 'storeRecipe']);
+    Route::get('/inventory', [InventoryController::class, 'index']);
+    Route::post('/restocks', [InventoryController::class, 'storeRestock']);
 });
 
 // Endpoint untuk React mengirim data transaksi (Checkout)

@@ -48,10 +48,13 @@ class RecipeController extends Controller
             if (
                 isset($data['unit'])
                 && $data['unit'] !== $ingredient->unit
-                && $ingredient->recipeIngredients()->exists()
+                && (
+                    $ingredient->recipeIngredients()->exists()
+                    || $ingredient->movements()->exists()
+                )
             ) {
                 throw ValidationException::withMessages([
-                    'unit' => 'The base unit cannot change after this ingredient is used in a recipe.',
+                    'unit' => 'The base unit cannot change after this ingredient is used in a recipe or stock movement.',
                 ]);
             }
 
