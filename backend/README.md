@@ -51,6 +51,8 @@ Do not seed a shared/default PIN. The session API is `GET /api/login-options?rol
 
 The API uses Laravel's stateful session middleware and CSRF protection; browser clients must use the session cookie and CSRF cookie rather than storing a bearer token. In production, serve the SPA and API from the same origin, use HTTPS, set `SESSION_SECURE_COOKIE=true`, and configure a shared persistent `CACHE_STORE` for rate limits.
 
+For local frontend development, run Vite on port 5173 and Laravel on port 8000. Vite proxies `/api` and `/sanctum` to `http://127.0.0.1:8000`; set `MOKAPRO_BACKEND_URL` in the frontend environment if Laravel uses another URL. The Vite origin is included in Sanctum's default stateful domains.
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

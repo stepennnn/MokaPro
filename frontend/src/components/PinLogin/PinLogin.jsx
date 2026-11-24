@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/useAuth';
+import { apiFetch } from '../../lib/api';
 import PublicNavbar from '../PublicNavbar/PublicNavbar';
 import './PinLogin.css';
 
@@ -8,40 +10,84 @@ import './PinLogin.css';
  * Digunakan untuk halaman PIN Kasir, Barista, dan Admin
  *
  * @param {Object} props
- * @param {string} props.roleName - e.g. "Kasir 01"
+ * @param {string} props.roleName - e.g. "Kasir"
  * @param {string} props.roleSubtitle - e.g. "Kasir · Cabang Utama Toko"
- * @param {string} props.roleLabel - e.g. "Kasir"
+ * @param {'cashier'|'barista'|'admin'} props.roleCode
  * @param {string} props.roleIcon - image source for role icon badge
  * @param {string} props.roleIconAlt - alt text for role icon
- * @param {string} props.expectedPin - e.g. "1234"
  * @param {string} props.destination - e.g. "/cashier"
  */
 export default function PinLogin({
-  roleName = 'Kasir 01',
+  roleName = 'Kasir',
   roleSubtitle = 'Kasir · Cabang Utama Toko',
-  roleLabel = 'Kasir',
+  roleCode,
   roleIcon,
   roleIconAlt = 'Role icon',
-  expectedPin = '1234',
   destination = '/cashier'
 }) {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [pin, setPin] = useState('');
+  const [employees, setEmployees] = useState([]);
+  const [employeeId, setEmployeeId] = useState('');
+  const [loadingEmployees, setLoadingEmployees] = useState(true);
+  const [employeeError, setEmployeeError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    let cancelled = false;
+
+    apiFetch(`/api/login-options?role=${encodeURIComponent(roleCode)}`)
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!Array.isArray(payload.data)) {
+          throw new Error('Daftar karyawan dari server tidak valid.');
+        }
+
+        if (!cancelled) {
+          setEmployees(payload.data);
+          setEmployeeId(payload.data.length === 1 ? String(payload.data[0].id) : '');
+        }
+      })
+      .catch((requestError) => {
+        if (!cancelled) {
+          setEmployeeError(requestError.message || 'Daftar karyawan tidak dapat dimuat.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoadingEmployees(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [roleCode]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!pin.trim()) {
-      setErrorMessage('Silakan masukkan PIN');
+    if (!employeeId) {
+      setErrorMessage('Silakan pilih akun karyawan.');
       return;
     }
 
-    // Simulasi frontend autentikasi: menerima expectedPin atau PIN 4 digit apapun untuk kemudahan testing
-    if (pin === expectedPin || pin.length >= 4) {
+    if (!/^\d{6,12}$/.test(pin)) {
+      setErrorMessage('PIN harus terdiri dari 6–12 angka.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await login(employeeId, roleCode, pin);
       setErrorMessage('');
+      setPin('');
       navigate(destination);
-    } else {
-      setErrorMessage(`PIN tidak sesuai. Gunakan PIN: ${expectedPin}`);
+    } catch (requestError) {
+      setErrorMessage(requestError.message || 'Login gagal. Silakan coba lagi.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -93,6 +139,38 @@ export default function PinLogin({
 
           {/* Form PIN */}
           <form className="pin-form" onSubmit={handleSubmit}>
+            <label htmlFor="employee-select" className="pin-input-label">
+              Akun karyawan
+            </label>
+            <select
+              id="employee-select"
+              className="employee-select"
+              value={employeeId}
+              onChange={(e) => setEmployeeId(e.target.value)}
+              disabled={loadingEmployees || employees.length === 0}
+              required
+            >
+              <option value="">
+                {loadingEmployees ? 'Memuat akun...' : 'Pilih akun karyawan'}
+              </option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.id}>
+                  {employee.name}
+                </option>
+              ))}
+            </select>
+
+            {employeeError && (
+              <span className="pin-error-text" role="alert">
+                {employeeError}
+              </span>
+            )}
+            {!loadingEmployees && !employeeError && employees.length === 0 && (
+              <span className="pin-error-text" role="status">
+                Belum ada akun aktif untuk peran ini.
+              </span>
+            )}
+
             <label htmlFor="pin-input" className="pin-input-label">
               PIN Karyawan
             </label>
@@ -100,16 +178,19 @@ export default function PinLogin({
               id="pin-input"
               type="password"
               inputMode="numeric"
-              maxLength={8}
+              minLength={6}
+              maxLength={12}
+              pattern="[0-9]{6,12}"
+              required
               autoFocus
               className={`pin-input ${errorMessage ? 'pin-input-error' : ''}`}
               value={pin}
               onChange={(e) => {
-                setPin(e.target.value);
+                setPin(e.target.value.replace(/\D/g, '').slice(0, 12));
                 if (errorMessage) setErrorMessage('');
               }}
               placeholder=""
-              autoComplete="current-password"
+              autoComplete="off"
             />
 
             {errorMessage && (
@@ -118,8 +199,12 @@ export default function PinLogin({
               </span>
             )}
 
-            <button type="submit" className="pin-submit-btn">
-              <span>Masuk</span>
+            <button
+              type="submit"
+              className="pin-submit-btn"
+              disabled={submitting || loadingEmployees || employees.length === 0}
+            >
+              <span>{submitting ? 'Memeriksa...' : 'Masuk'}</span>
               <svg
                 className="pin-submit-arrow"
                 viewBox="0 0 24 24"
@@ -140,7 +225,7 @@ export default function PinLogin({
 
           {/* Helper Note */}
           <p className="pin-helper-note">
-            PIN untuk {roleLabel}: <strong>{expectedPin}</strong>
+            Gunakan PIN karyawan 6–12 angka.
           </p>
         </div>
       </main>

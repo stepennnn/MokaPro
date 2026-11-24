@@ -11,12 +11,11 @@ export default function CashierPin() {
   return (
     <div className="cashier-pin-page">
       <PinLogin
-        roleName="Kasir 01"
+        roleName="Kasir"
         roleSubtitle="Kasir · Cabang Utama Toko"
-        roleLabel="Kasir"
+        roleCode="cashier"
         roleIcon={roleCashierIcon}
         roleIconAlt="Role Kasir"
-        expectedPin="1234"
         destination="/cashier"
       />
     </div>

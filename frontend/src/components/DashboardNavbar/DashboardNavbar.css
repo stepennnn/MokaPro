@@ -178,6 +178,17 @@
   color: #bd733d;
 }
 
+.dashboard-switch-user-btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.dashboard-logout-error {
+  max-width: 180px;
+  color: #b42318;
+  font-size: 11px;
+}
+
 .switch-user-icon {
   display: inline-flex;
   align-items: center;

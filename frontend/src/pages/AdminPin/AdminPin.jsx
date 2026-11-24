@@ -11,12 +11,11 @@ export default function AdminPin() {
   return (
     <div className="admin-pin-page">
       <PinLogin
-        roleName="Pengelola 01"
+        roleName="Pengelola"
         roleSubtitle="Admin / Pengelola · Cabang Utama Toko"
-        roleLabel="Admin / Pengelola"
+        roleCode="admin"
         roleIcon={roleAdminIcon}
         roleIconAlt="Role Admin / Pengelola"
-        expectedPin="3456"
         destination="/admin"
       />
     </div>

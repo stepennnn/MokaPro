@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/useAuth';
 import './DashboardNavbar.css';
 
 /**
@@ -6,30 +8,27 @@ import './DashboardNavbar.css';
  * Navbar untuk halaman internal setelah autentikasi (Kasir, Barista, Admin)
  *
  * @param {Object} props
- * @param {'cashier'|'barista'|'admin'} [props.role='cashier']
  * @param {string} [props.storeName='Cabang Utama Toko']
- * @param {string} [props.userName='Kasir 01']
- * @param {string} [props.userRoleLabel='Kasir']
  */
 export default function DashboardNavbar({
-  role = 'cashier',
-  storeName = 'Cabang Utama Toko',
-  userName = 'Kasir 01',
-  userRoleLabel = 'Kasir'
+  storeName = 'Cabang Utama Toko'
 }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, role, logout } = useAuth();
+  const [logoutError, setLogoutError] = useState('');
+  const [loggingOut, setLoggingOut] = useState(false);
 
   // Konfigurasi tabs berdasarkan role
-  const getNavTabs = () => {
-    if (role === 'cashier') {
+  const getNavTabs = (activeRole) => {
+    if (activeRole === 'cashier') {
       return [
         { label: 'Kasir', path: '/cashier' },
         { label: 'Riwayat Transaksi', path: '/history' },
         { label: 'Shift Kasir', path: '/cashier/shift' }
       ];
     }
-    if (role === 'barista') {
+    if (activeRole === 'barista') {
       return [
         { label: 'Kitchen Display', path: '/kds' }
       ];
@@ -43,7 +42,26 @@ export default function DashboardNavbar({
     ];
   };
 
-  const tabs = getNavTabs();
+  const tabs = role ? getNavTabs(role) : [];
+  const roleLabels = {
+    cashier: 'Kasir',
+    barista: 'Barista',
+    admin: 'Admin'
+  };
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    setLogoutError('');
+
+    try {
+      await logout();
+      navigate('/select-user', { replace: true });
+    } catch (requestError) {
+      setLogoutError(requestError.message || 'Tidak dapat mengakhiri sesi.');
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <header className="dashboard-navbar">
@@ -114,19 +132,20 @@ export default function DashboardNavbar({
           </div>
         </nav>
 
-        {/* Right Section: User Info Card & Ganti Pengguna */}
+        {/* Right Section: User Info and Logout */}
         <div className="dashboard-navbar-right">
           <div className="dashboard-user-badge">
-            <span className="dashboard-user-name">{userName}</span>
-            <span className="dashboard-user-role">{userRoleLabel}</span>
+            <span className="dashboard-user-name">{user?.name}</span>
+            <span className="dashboard-user-role">{roleLabels[role]}</span>
           </div>
 
           <button
             type="button"
             className="dashboard-switch-user-btn"
-            onClick={() => navigate('/select-user')}
+            onClick={handleLogout}
+            disabled={loggingOut}
           >
-            <span>Ganti Pengguna</span>
+            <span>{loggingOut ? 'Keluar...' : 'Keluar'}</span>
             <svg
               className="switch-user-icon"
               viewBox="0 0 24 24"
@@ -143,6 +162,11 @@ export default function DashboardNavbar({
               <polyline points="7 7 17 7 17 17" />
             </svg>
           </button>
+          {logoutError && (
+            <span className="dashboard-logout-error" role="alert">
+              {logoutError}
+            </span>
+          )}
         </div>
       </div>
     </header>

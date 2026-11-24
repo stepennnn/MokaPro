@@ -11,12 +11,11 @@ export default function BaristaPin() {
   return (
     <div className="barista-pin-page">
       <PinLogin
-        roleName="Barista 01"
+        roleName="Barista"
         roleSubtitle="Barista / Dapur · Cabang Utama Toko"
-        roleLabel="Barista / Dapur"
+        roleCode="barista"
         roleIcon={roleBaristaIcon}
         roleIconAlt="Role Barista"
-        expectedPin="2345"
         destination="/kds"
       />
     </div>

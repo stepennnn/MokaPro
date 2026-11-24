@@ -130,6 +130,27 @@
   text-align: left;
 }
 
+.employee-select {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 14px;
+  padding: 0 12px;
+  border: 1px solid #e5ded6;
+  border-radius: 10px;
+  background-color: #fdfbf7;
+  color: #261a15;
+  font: inherit;
+}
+
+.employee-select:focus {
+  border-color: #bd733d;
+  outline: 3px solid rgba(189, 115, 61, 0.12);
+}
+
+.employee-select:disabled {
+  color: #8a7c73;
+}
+
 .pin-input {
   width: 100%;
   height: 44px;
@@ -188,6 +209,12 @@
 .pin-submit-btn:hover {
   background-color: #4f3323;
   transform: translateY(-1px);
+}
+
+.pin-submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
 }
 
 .pin-submit-btn:active {

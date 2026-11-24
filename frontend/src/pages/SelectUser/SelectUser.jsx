@@ -16,7 +16,7 @@ export default function SelectUser() {
   const roles = [
     {
       id: 'cashier',
-      name: 'Kasir 01',
+      name: 'Kasir',
       roleTitle: 'Kasir',
       description: 'Pemesanan, pembayaran, dan kas shift',
       icon: roleCashierIcon,
@@ -25,7 +25,7 @@ export default function SelectUser() {
     },
     {
       id: 'barista',
-      name: 'Barista 01',
+      name: 'Barista',
       roleTitle: 'Barista / Dapur',
       description: 'Antrean pesanan dan proses racik',
       icon: roleBaristaIcon,
@@ -34,7 +34,7 @@ export default function SelectUser() {
     },
     {
       id: 'admin',
-      name: 'Pengelola 01',
+      name: 'Pengelola',
       roleTitle: 'Admin / Pengelola',
       description: 'Inventaris, laporan, dan pengelolaan sistem',
       icon: roleAdminIcon,
