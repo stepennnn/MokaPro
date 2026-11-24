@@ -68,6 +68,20 @@ class RoleAuthorizationTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_inactive_employee_cannot_access_protected_operations(): void
+    {
+        $employee = User::factory()->create();
+        $employee->roles()->attach(
+            Role::query()->where('code', 'cashier')->firstOrFail(),
+        );
+        $employee->forceFill(['active' => false])->save();
+
+        $this->actingAs($employee)
+            ->withSession(['active_role' => 'cashier'])
+            ->getJson('/api/products', ['Origin' => 'http://localhost'])
+            ->assertForbidden();
+    }
+
     private function asEmployeeWithRole(string $assignedRole, ?string $activeRole = null): static
     {
         $employee = User::factory()->create();
@@ -75,7 +89,7 @@ class RoleAuthorizationTest extends TestCase
             Role::query()->where('code', $assignedRole)->firstOrFail(),
         );
 
-        return $this->actingAs($employee)
+        return $this->actingAs($employee->fresh())
             ->withSession(['active_role' => $activeRole ?? $assignedRole]);
     }
 }

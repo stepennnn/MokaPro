@@ -19,6 +19,7 @@ class RequireRole
 
         abort_unless(
             $user instanceof User
+            && $user->active
             && is_string($activeRole)
             && $user->hasRole($activeRole)
             && in_array($activeRole, $roles, true),

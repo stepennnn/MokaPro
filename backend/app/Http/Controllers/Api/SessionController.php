@@ -86,6 +86,14 @@ class SessionController extends Controller
         /** @var User $employee */
         $employee = $request->user();
 
+        if (! $employee->active) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         return response()->json([
             'employee' => [
                 'id' => $employee->id,

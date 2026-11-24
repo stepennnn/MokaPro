@@ -161,6 +161,20 @@ class SessionTest extends TestCase
         $this->getJson('/api/session', ['Origin' => 'http://localhost'])->assertUnauthorized();
     }
 
+    public function test_session_endpoint_revokes_an_inactive_employees_session(): void
+    {
+        $employee = $this->employeeWithPin('123456');
+        $employee->forceFill(['active' => false])->save();
+
+        $this->actingAs($employee)
+            ->withSession(['active_role' => 'cashier'])
+            ->getJson('/api/session', ['Origin' => 'http://localhost'])
+            ->assertUnauthorized();
+
+        $this->assertGuest('web');
+        $this->assertFalse(session()->has('active_role'));
+    }
+
     public function test_logout_invalidates_the_session_and_rotates_csrf_token(): void
     {
         $employee = $this->employeeWithPin('123456');
