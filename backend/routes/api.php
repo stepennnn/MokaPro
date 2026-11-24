@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\RecipeController;
 use App\Http\Controllers\Api\SessionController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,13 @@ Route::middleware(['auth:web', 'role:admin'])->prefix('admin')->group(function (
     Route::patch('/categories/{category}', [CategoryController::class, 'update']);
     Route::post('/products', [ProductController::class, 'store']);
     Route::patch('/products/{product}', [ProductController::class, 'update']);
+    Route::get('/ingredients', [RecipeController::class, 'ingredientsIndex']);
+    Route::post('/ingredients', [RecipeController::class, 'storeIngredient']);
+    Route::patch('/ingredients/{ingredient}', [RecipeController::class, 'updateIngredient']);
+    Route::post('/modifiers', [RecipeController::class, 'storeModifier']);
+    Route::patch('/modifiers/{modifier}', [RecipeController::class, 'updateModifier']);
+    Route::put('/products/{product}/modifiers', [RecipeController::class, 'syncProductModifiers']);
+    Route::post('/products/{product}/recipes', [RecipeController::class, 'storeRecipe']);
 });
 
 // Endpoint untuk React mengirim data transaksi (Checkout)

@@ -17,17 +17,17 @@ class SaveProductRequest extends FormRequest
             $uniqueCode->ignore($product->id);
         }
 
-        $required = $this->isMethod('PATCH') ? 'sometimes|required' : 'required';
+        $required = $this->isMethod('PATCH') ? ['sometimes', 'required'] : ['required'];
 
         return [
-            'code' => [$required, 'string', 'max:64', $uniqueCode],
-            'name' => [$required, 'string', 'max:255'],
+            'code' => [...$required, 'string', 'max:64', $uniqueCode],
+            'name' => [...$required, 'string', 'max:255'],
             'category_id' => [
-                $required,
+                ...$required,
                 'integer',
                 Rule::exists('categories', 'id')->where('active', true),
             ],
-            'price' => [$required, 'string', 'regex:/\A\d+(?:\.\d{1,2})?\z/'],
+            'price' => [...$required, 'string', 'regex:/\A\d+(?:\.\d{1,2})?\z/'],
             'active' => ['sometimes', 'boolean'],
         ];
     }

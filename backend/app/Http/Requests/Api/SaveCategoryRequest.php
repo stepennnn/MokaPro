@@ -17,10 +17,10 @@ class SaveCategoryRequest extends FormRequest
             $uniqueName->ignore($category->id);
         }
 
-        $required = $this->isMethod('PATCH') ? 'sometimes|required' : 'required';
+        $required = $this->isMethod('PATCH') ? ['sometimes', 'required'] : ['required'];
 
         return [
-            'name' => [$required, 'string', 'max:255', $uniqueName],
+            'name' => [...$required, 'string', 'max:255', $uniqueName],
             'active' => ['sometimes', 'boolean'],
         ];
     }

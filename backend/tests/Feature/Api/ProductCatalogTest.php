@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\ProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -34,6 +35,8 @@ class ProductCatalogTest extends TestCase
                 'category' => ['id' => $category['id'], 'name' => 'Coffee'],
                 'price' => '4.50',
                 'active' => true,
+                'active_recipe' => null,
+                'modifiers' => [],
             ]],
         ];
 
@@ -133,6 +136,30 @@ class ProductCatalogTest extends TestCase
         $this->assertDatabaseMissing('products', ['code' => 'SEASONAL']);
     }
 
+    public function test_admin_can_update_products_and_categories_without_losing_legacy_category_data(): void
+    {
+        $this->asRole('admin');
+        $category = $this->createCategory('Coffee');
+        $product = $this->createProduct('LATTE', 'Latte', $category['id'], '4.50');
+
+        $this->patchJson('/api/admin/products/'.$product['id'], [
+            'price' => '5.00',
+            'active' => false,
+        ], ['Origin' => 'http://localhost'])
+            ->assertOk()
+            ->assertJsonPath('data.price', '5.00')
+            ->assertJsonPath('data.active', false);
+
+        $this->patchJson('/api/admin/categories/'.$category['id'], [
+            'name' => 'Hot Drinks',
+        ], ['Origin' => 'http://localhost'])->assertOk();
+
+        $this->assertDatabaseHas('products', [
+            'id' => $product['id'],
+            'category' => 'Hot Drinks',
+        ]);
+    }
+
     public function test_category_with_products_has_no_delete_endpoint(): void
     {
         $this->asRole('admin');
@@ -143,6 +170,19 @@ class ProductCatalogTest extends TestCase
             ->assertMethodNotAllowed();
 
         $this->assertDatabaseHas('categories', ['id' => $category['id'], 'name' => 'Coffee']);
+    }
+
+    public function test_product_seeder_populates_normalized_catalog_idempotently(): void
+    {
+        $this->seed(ProductSeeder::class);
+        $this->seed(ProductSeeder::class);
+
+        $this->assertDatabaseCount('products', 6);
+        $this->assertDatabaseCount('categories', 4);
+        $this->assertDatabaseHas('products', [
+            'code' => 'SEED-ESPRESSO-DOUBLE',
+            'category' => 'Espresso Based',
+        ]);
     }
 
     private function createCategory(string $name, bool $active = true): array
